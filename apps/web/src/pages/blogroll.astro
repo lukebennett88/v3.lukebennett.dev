@@ -1,0 +1,44 @@
+---
+import { DocumentRenderer } from '~/keystatic/document-renderer';
+import { reader } from '~/keystatic/reader';
+import Layout from '~/layouts/layout.astro';
+
+const page = await reader.singletons.blogroll.readOrThrow();
+const content = await page.content();
+---
+
+<Layout title="Blogroll">
+	<div class="prose mx-auto dark:prose-invert">
+		<DocumentRenderer document={content} />
+		<ul>
+			{
+				page.blogs.map((blog) => (
+					<li>
+						<a href={blog.href}>{blog.label}</a>
+						{blog.rss && (
+							<a href={blog.rss} class="text-sm text-gray-500 underline">
+								(RSS)
+							</a>
+						)}
+						{blog.links.length > 0 && (
+							<ul class="not-prose float-end font-mono text-xs font-bold">
+								{blog.links.filter(Boolean).map((link, index) => (
+									<Fragment>
+										<li>
+											<a
+												href={link.href}
+												class="text-sm text-gray-500 underline"
+											>
+												{`#${link.label}${index < blog.links.length - 1 ? ', ' : ''}`}
+											</a>
+										</li>
+									</Fragment>
+								))}
+							</ul>
+						)}
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</Layout>
