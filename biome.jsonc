@@ -57,6 +57,7 @@
 			"correctness": {
 				"all": true,
 				"noNodejsModules": "off",
+				"noUndeclaredDependencies": "off",
 				"useImportExtensions": "off"
 			},
 			"performance": {

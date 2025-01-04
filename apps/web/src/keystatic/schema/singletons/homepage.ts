@@ -8,7 +8,7 @@ export const homepage = singleton({
 	format: {
 		contentField: 'content',
 	},
-	path: 'content/_homepage',
+	path: 'content/homepage',
 	schema: {
 		content,
 	},

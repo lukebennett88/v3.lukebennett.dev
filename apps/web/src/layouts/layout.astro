@@ -2,10 +2,9 @@
 import '@fontsource-variable/source-code-pro';
 import '@fontsource-variable/source-sans-3';
 import '@fontsource-variable/source-serif-4';
-
-import { ViewTransitions } from 'astro:transitions';
-
 import '~/styles.css';
+
+import { ClientRouter } from 'astro:transitions';
 
 import Footer from '~/components/footer.astro';
 import Header from '~/components/header.astro';
@@ -75,7 +74,7 @@ const ogImage = new URL('/og.jpg', Astro.site).toString();
 		<meta name="twitter:image" content={ogImage} />
 		<meta name="twitter:image:width" content="1920" />
 		<meta name="twitter:image:height" content="1080" />
-		<ViewTransitions />
+		<ClientRouter />
 	</head>
 	<body class="flex min-h-[100dvh] justify-center bg-teal-700 p-2 [tab-size:2]">
 		<ThemeProvider />

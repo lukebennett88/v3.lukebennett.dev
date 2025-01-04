@@ -1,19 +1,14 @@
 ---
-import { Me } from '~/components/me';
 import { DocumentRenderer } from '~/keystatic/document-renderer';
 import { reader } from '~/keystatic/reader';
-
-import Layout from '../layouts/layout.astro';
+import Layout from '~/layouts/layout.astro';
 
 const page = await reader.singletons.homepage.readOrThrow();
 const content = await page.content();
 ---
 
 <Layout title="Luke Bennett">
-	<div class="mx-auto grid max-w-prose items-center gap-16">
-		<div class="prose dark:prose-invert">
-			<DocumentRenderer document={content} />
-		</div>
-		<Me className="w-full" />
+	<div class="prose mx-auto dark:prose-invert">
+		<DocumentRenderer document={content} />
 	</div>
 </Layout>
