@@ -17,7 +17,7 @@
 		"fix:lint": "pnpm biome lint --write",
 		"lint": "pnpm biome lint --write",
 		"preview": "astro preview",
-		"start": "astro dev"
+		"start": "npx serve dist/client"
 	},
 	"dependencies": {
 		"@astrojs/markdoc": "^0.12.4",
