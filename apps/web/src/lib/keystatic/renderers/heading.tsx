@@ -1,7 +1,6 @@
 import slugify from '@sindresorhus/slugify';
-
-import { ZeroWidthSpace } from '~/components/zero-width-space';
-import { cn } from '~/lib/cn';
+import { ZeroWidthSpace } from '../../../components/zero-width-space';
+import { cn } from '../../cn';
 
 type NativeHeadingProps = React.HTMLAttributes<HTMLHeadingElement>;
 

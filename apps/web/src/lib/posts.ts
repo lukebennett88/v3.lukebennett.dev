@@ -1,4 +1,4 @@
-import { reader } from '~/keystatic/reader';
+import { reader } from './keystatic/reader';
 
 /** Date v3 of the website was first published */
 export const startDate = '2023-05-29';

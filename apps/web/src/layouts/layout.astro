@@ -2,16 +2,14 @@
 import '@fontsource-variable/source-code-pro';
 import '@fontsource-variable/source-sans-3';
 import '@fontsource-variable/source-serif-4';
-import '~/styles.css';
-
 import { ClientRouter } from 'astro:transitions';
-
-import Footer from '~/components/footer.astro';
-import Header from '~/components/header.astro';
-import ThemeProvider from '~/components/theme-provider.astro';
-import { cn } from '~/lib/cn';
-import { MAIN_ID } from '~/lib/constants';
-import { packs } from '~/lib/packs';
+import Footer from '../components/footer.astro';
+import Header from '../components/header.astro';
+import ThemeProvider from '../components/theme-provider.astro';
+import { cn } from '../lib/cn';
+import { MAIN_ID } from '../lib/constants';
+import { packs } from '../lib/packs';
+import '../styles.css';
 
 export type Props = {
 	description?: string;

@@ -1,6 +1,6 @@
 import { fields } from '@keystatic/core';
 
-import { componentBlocks } from '~/keystatic/component-block';
+import { componentBlocks } from '../../component-block';
 
 export const content = fields.document({
 	label: 'Content',

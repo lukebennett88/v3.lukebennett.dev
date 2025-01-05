@@ -2,9 +2,8 @@ import type { APIRoute } from 'astro';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import invariant from 'tiny-invariant';
-
-import { DocumentRenderer } from '~/keystatic/document-renderer';
-import { getSortedEntries, toIsoString } from '~/lib/posts';
+import { DocumentRenderer } from '../lib/keystatic/document-renderer';
+import { getSortedEntries, toIsoString } from '../lib/posts';
 
 const MAX_POSTS = 100;
 

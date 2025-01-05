@@ -1,7 +1,6 @@
 {
 	"extends": "@lukebennett/tsconfig/dom",
 	"compilerOptions": {
-		"baseUrl": ".",
-		"paths": { "~/*": ["./src/*"] }
+		"baseUrl": "."
 	}
 }

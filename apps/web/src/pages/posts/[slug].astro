@@ -1,9 +1,8 @@
 ---
 import invariant from 'tiny-invariant';
-
-import Post from '~/components/post.astro';
-import { reader } from '~/keystatic/reader';
-import Layout from '~/layouts/layout.astro';
+import Post from '../../components/post.astro';
+import Layout from '../../layouts/layout.astro';
+import { reader } from '../../lib/keystatic/reader';
 
 const { slug } = Astro.params;
 invariant(slug, 'Slug not found');

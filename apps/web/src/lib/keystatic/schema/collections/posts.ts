@@ -1,6 +1,6 @@
 import { collection, fields } from '@keystatic/core';
 
-import { content } from '~/keystatic/schema/fields/content';
+import { content } from '../fields/content';
 
 export const posts = collection({
 	label: 'Posts',

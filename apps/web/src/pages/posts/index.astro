@@ -1,8 +1,8 @@
 ---
-import { reader } from '~/keystatic/reader';
-import Layout from '~/layouts/layout.astro';
-import { cn } from '~/lib/cn';
-import { formatToAustralianDate, sortPosts } from '~/lib/posts';
+import Layout from '../../layouts/layout.astro';
+import { cn } from '../../lib/cn';
+import { reader } from '../../lib/keystatic/reader';
+import { formatToAustralianDate, sortPosts } from '../../lib/posts';
 
 const posts = sortPosts(await reader.collections.posts.all()).filter((post) =>
 	process.env.NODE_ENV === 'production' ? !post.entry.isDraft : true,

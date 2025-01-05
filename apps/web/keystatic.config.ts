@@ -1,9 +1,8 @@
 import { config as createConfig } from '@keystatic/core';
-
-import { links } from '~/keystatic/schema/collections/links';
-import { posts } from '~/keystatic/schema/collections/posts';
-import { blogroll } from '~/keystatic/schema/singletons/blogroll';
-import { homepage } from '~/keystatic/schema/singletons/homepage';
+import { links } from './src/lib/keystatic/schema/collections/links';
+import { posts } from './src/lib/keystatic/schema/collections/posts';
+import { blogroll } from './src/lib/keystatic/schema/singletons/blogroll';
+import { homepage } from './src/lib/keystatic/schema/singletons/homepage';
 
 export const config = createConfig({
 	cloud: {
@@ -27,3 +26,5 @@ export const config = createConfig({
 		links,
 	},
 });
+
+export default config;

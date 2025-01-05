@@ -2,12 +2,8 @@ import {
 	type DocumentRendererProps,
 	DocumentRenderer as KeystaticDocumentRenderer,
 } from '@keystatic/core/renderer';
-
-import {
-	componentBlockRenderers,
-	getDocumentRenderers,
-} from '~/keystatic/renderers';
-import { highlighter } from '~/lib/highlighter';
+import { highlighter } from '../highlighter';
+import { componentBlockRenderers, getDocumentRenderers } from './renderers';
 
 export function DocumentRenderer(props: DocumentRendererProps) {
 	const {

@@ -1,7 +1,7 @@
 ---
-import { DocumentRenderer } from '~/keystatic/document-renderer';
-import { reader } from '~/keystatic/reader';
-import Layout from '~/layouts/layout.astro';
+import Layout from '../layouts/layout.astro';
+import { DocumentRenderer } from '../lib/keystatic/document-renderer';
+import { reader } from '../lib/keystatic/reader';
 
 const page = await reader.singletons.homepage.readOrThrow();
 const content = await page.content();

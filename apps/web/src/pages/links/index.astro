@@ -1,10 +1,10 @@
 ---
-import ExternalLinkHeading from '~/components/external-link-heading.astro';
-import { ZeroWidthSpace } from '~/components/zero-width-space';
-import { DocumentRenderer } from '~/keystatic/document-renderer';
-import { reader } from '~/keystatic/reader';
-import Layout from '~/layouts/layout.astro';
-import { formatToAustralianDate, sortPosts } from '~/lib/posts';
+import ExternalLinkHeading from '../../components/external-link-heading.astro';
+import { ZeroWidthSpace } from '../../components/zero-width-space';
+import Layout from '../../layouts/layout.astro';
+import { DocumentRenderer } from '../../lib/keystatic/document-renderer';
+import { reader } from '../../lib/keystatic/reader';
+import { formatToAustralianDate, sortPosts } from '../../lib/posts';
 
 const posts = sortPosts(await reader.collections.links.all());
 

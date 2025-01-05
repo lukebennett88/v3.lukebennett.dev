@@ -3,6 +3,7 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
 import vercel from '@astrojs/vercel';
+import keystatic from '@keystatic/astro';
 import { defineConfig } from 'astro/config';
 
 /** @see https://astro.build/config */
@@ -13,7 +14,7 @@ export default defineConfig({
 			enabled: true,
 		},
 	}),
-	integrations: [markdoc(), react(), sitemap(), tailwind()],
+	integrations: [keystatic(), markdoc(), react(), sitemap(), tailwind()],
 	output: 'static',
 	site: 'https://www.lukebennett.com.au',
 	server: {
