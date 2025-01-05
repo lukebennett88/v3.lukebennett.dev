@@ -59,6 +59,9 @@ importers:
       '@sindresorhus/slugify':
         specifier: ^2.2.1
         version: 2.2.1
+      '@unpic/react':
+        specifier: ^0.1.15
+        version: 0.1.15(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       astro:
         specifier: ^5.1.1
         version: 5.1.1(idb-keyval@6.2.1)(jiti@1.21.7)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1)
@@ -1723,6 +1726,19 @@ packages:
 
   '@ungap/structured-clone@1.2.1':
     resolution: {integrity: sha512-fEzPV3hSkSMltkw152tJKNARhOupqbH96MZWyRjNaYZOMIzbrTeQDG+MTc6Mr2pgzFQzFxAfmhGDNP5QK++2ZA==}
+
+  '@unpic/core@0.1.0':
+    resolution: {integrity: sha512-Xw6BNChpV1klga8Qe/Y4slkohMl4GLmsQCEOxx+yRrm7cMzT6covLvUMVP606YTtIFpJauh0fSZ+N2A03y80iA==}
+
+  '@unpic/react@0.1.15':
+    resolution: {integrity: sha512-Mr5cC96O1AZNRDfgDtL3VChr3xferCHLEzkj4Xg6XekdHltI/FHm9LPKHECE1V/bUn2qmJXoYOSmCB+4QDhIJg==}
+    peerDependencies:
+      next: ^13.0.0 || ^14.0.0 || ^15.0.0
+      react: ^17.0.0 || ^18.0.0
+      react-dom: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      next:
+        optional: true
 
   '@urql/core@5.1.0':
     resolution: {integrity: sha512-yC3sw8yqjbX45GbXxfiBY8GLYCiyW/hLBbQF9l3TJrv4ro00Y0ChkKaD9I2KntRxAVm9IYBqh0awX8fwWAe/Yw==}
@@ -3603,6 +3619,9 @@ packages:
 
   unist-util-visit@5.0.0:
     resolution: {integrity: sha512-MR04uvD+07cwl/yhVuVWAtw+3GOR/knlL55Nd/wAdblk27GCVt3lqpTivy/tkJcZoNPzTwS1Y+KMojlLDhoTzg==}
+
+  unpic@3.22.0:
+    resolution: {integrity: sha512-NFhB8HgHHWkNzTxwWg6KHx8+3RZnhWFm4Axdqp9iI176iY3wskzfP16NRSJ2SSTfXzyK4W6GsBqs8iOOdvOB3g==}
 
   unstorage@1.14.4:
     resolution: {integrity: sha512-1SYeamwuYeQJtJ/USE1x4l17LkmQBzg7deBJ+U9qOBoHo15d1cDxG4jM31zKRgF7pG0kirZy4wVMX6WL6Zoscg==}
@@ -6143,6 +6162,16 @@ snapshots:
 
   '@ungap/structured-clone@1.2.1': {}
 
+  '@unpic/core@0.1.0':
+    dependencies:
+      unpic: 3.22.0
+
+  '@unpic/react@0.1.15(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@unpic/core': 0.1.0
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
   '@urql/core@5.1.0(graphql@16.10.0)':
     dependencies:
       '@0no-co/graphql.web': 1.0.12(graphql@16.10.0)
@@ -8491,6 +8520,8 @@ snapshots:
       '@types/unist': 3.0.3
       unist-util-is: 6.0.0
       unist-util-visit-parents: 6.0.1
+
+  unpic@3.22.0: {}
 
   unstorage@1.14.4(idb-keyval@6.2.1):
     dependencies:

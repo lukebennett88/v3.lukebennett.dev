@@ -1,139 +1,133 @@
-import { useMemo } from 'react';
+import { Image, type ImageProps } from '@unpic/react';
+import invariant from 'tiny-invariant';
 import { cn } from '../../cn';
 
-type NativeImageProps = React.ImgHTMLAttributes<HTMLImageElement>;
+const MAX_WIDTH = 700;
 
-type CloudImageProps = Omit<
-	NativeImageProps,
-	| 'alt'
-	| 'decoding'
-	| 'height'
-	| 'loading'
-	| 'role'
-	| 'sizes'
-	| 'src'
-	| 'srcSet'
-	| 'width'
-> & {
-	/** The alt text for the image. */
-	alt?: string;
-
+/**
+ * The props for the CloudImage component.
+ */
+type CloudImageProps = Omit<ImageProps, 'height' | 'layout' | 'width'> & {
 	/**
-	 * The breakpoints at which to generate images.
-	 * @default [300, 400, 500, 600, 700]
+	 * The caption for the image.
 	 */
-	breakpoints?: Array<number>;
-
-	/** The caption for the image. */
 	caption?: string;
 
 	/**
-	 * Hint for browser image decoding.
-	 * - 'sync': Decode with DOM rendering.
-	 * - 'async': Decode after DOM rendering.
-	 * - 'auto': Browser decides.
-	 */
-	decoding?: 'sync' | 'async' | 'auto';
-
-	/**
-	 * The densities at which to generate images.
-	 * @default [1, 1.5, 2]
-	 */
-	densities?: Array<number>;
-
-	/**
 	 * How the image should be resized to fit its container.
-	 * - 'scale-down': Scale down to fit.
-	 * - 'contain': Scale to fit, preserving aspect ratio.
-	 * - 'cover': Scale to fill, preserving aspect ratio.
-	 * - 'crop': Scale to fill, cropping edges if necessary.
-	 * @default 'scale-down'
+	 * - ‘scale-down’: Scale down to fit.
+	 * - ‘contain’: Scale to fit, preserving aspect ratio.
+	 * - ‘cover’: Scale to fill, preserving aspect ratio.
+	 * - ‘crop’: Scale to fill, cropping edges if necessary.
+	 * @default ‘scale-down’
 	 */
 	fit?: 'scale-down' | 'contain' | 'cover' | 'crop';
 
-	/** The height of the image. */
+	/**
+	 * The height of the image.
+	 */
 	height?: number | null;
 
 	/**
-	 * Browser loading behavior for the image.
-	 * - 'eager': Load immediately.
-	 * - 'lazy': Defer until near viewport.
+	 * The width of the image.
 	 */
-	loading?: 'eager' | 'lazy';
-
-	/**
-	 * The maximum width of the image.
-	 * @default 700
-	 */
-	maxWidth?: number;
-
-	/**
-	 * Sets loading priority for the image.
-	 * When true, image loads eagerly and is given high priority.
-	 * Useful for above-the-fold or large hero images.
-	 * @default false
-	 */
-	priority?: boolean;
-
-	/** The source URL of the image. */
-	src: string;
-
-	/** The width of the image. */
 	width?: number | null;
 };
 
-export function CloudImage({
-	alt,
-	breakpoints = [300, 400, 500, 600, 700],
-	caption,
-	className,
-	decoding,
-	densities = [1, 1.5, 2],
-	fit = 'scale-down',
-	height = null,
-	loading,
-	maxWidth = 700,
-	priority = false,
-	src,
-	style,
-	width = null,
-	...consumerProps
-}: CloudImageProps) {
-	const srcSet = useMemo(
-		() =>
-			generateSrcSet({
-				breakpoints,
-				densities,
-				fit,
-				height,
-				src,
-				width,
-			}),
-		[breakpoints, densities, fit, height, src, width],
-	);
+export function CloudImage(props: CloudImageProps) {
+	const {
+		alt = '',
+		aspectRatio: originalAspectRatio,
+		breakpoints = defaultBreakpoints,
+		caption,
+		cdn = 'imgix',
+		className,
+		fit = 'scale-down',
+		height: originalHeight,
+		loading,
+		priority = false,
+		src,
+		width: originalWidth,
+		...consumerProps
+	} = props;
+
+	const srcUrl = parseURL(src);
+	srcUrl.searchParams.set('fit', fit);
+
+	let finalWidth: number | undefined;
+	let finalHeight: number | undefined;
+	let finalAspectRatio: number | undefined;
+
+	const widthType = typeof originalWidth === 'number' ? 'number' : 'null';
+	const heightType = typeof originalHeight === 'number' ? 'number' : 'null';
+
+	switch (`${widthType}-${heightType}` as const) {
+		case 'null-null': {
+			// No width or height provided
+			break;
+		}
+
+		case 'null-number': {
+			// Only height is provided
+			finalHeight = originalHeight ?? undefined;
+			break;
+		}
+
+		case 'number-null': {
+			// Only width is provided
+			invariant(typeof originalWidth === 'number');
+			finalWidth = Math.min(originalWidth, MAX_WIDTH);
+			break;
+		}
+
+		case 'number-number': {
+			// Both width and height are provided
+			invariant(typeof originalWidth === 'number');
+			invariant(typeof originalHeight === 'number');
+			if (originalWidth > MAX_WIDTH) {
+				finalWidth = MAX_WIDTH;
+				finalHeight = Math.round((originalHeight / originalWidth) * MAX_WIDTH);
+			} else {
+				finalWidth = originalWidth;
+				finalHeight = originalHeight;
+			}
+			if (!originalAspectRatio) {
+				finalAspectRatio = originalWidth / originalHeight;
+			}
+			break;
+		}
+
+		default: {
+			throw new Error(
+				`Invalid height/width combination: ${originalHeight} x ${originalWidth}`,
+			);
+		}
+	}
 
 	const img = (
-		<img
-			{...consumerProps}
+		<Image
 			alt={alt}
+			aspectRatio={finalAspectRatio}
+			background="auto"
+			breakpoints={breakpoints}
+			cdn={cdn}
 			className={cn('rounded-lg bg-white dark:bg-gray-800', className)}
-			decoding={(decoding ?? priority) ? 'async' : 'auto'}
-			loading={(loading ?? priority) ? 'eager' : 'lazy'}
-			role={alt ? undefined : 'presentation'}
-			sizes={`(min-width: ${maxWidth}px) ${maxWidth}px, 100vw`}
-			src={`${src}?width=${Math.min(width ?? 0, maxWidth)}&height=${
-				height ?? 0
-			}&fit=${fit}`}
-			srcSet={srcSet}
-			style={{
-				...style,
-				aspectRatio:
-					width && height ? `${(width / height).toFixed(2)}` : 'auto',
-				maxHeight: height ? `${height}px` : '100%',
-				maxWidth: width ? `${Math.min(width, maxWidth)}px` : '100%',
-				objectFit: 'cover',
-				width: '100%',
-			}}
+			height={
+				// Unpic will correctly handle undefined values, but they types error so
+				// we need to do a type assertion here
+				finalHeight as number
+			}
+			layout="constrained"
+			loading={loading}
+			objectFit="cover"
+			priority={priority}
+			src={srcUrl.toString()}
+			width={
+				// Unpic will correctly handle undefined values, but they types error so
+				// we need to do a type assertion here
+				finalWidth as number
+			}
+			{...consumerProps}
 		/>
 	);
 
@@ -149,34 +143,14 @@ export function CloudImage({
 	return img;
 }
 
-function generateSrcSet({
-	breakpoints,
-	densities,
-	fit,
-	height,
-	src,
-	width,
-}: Required<
-	Pick<CloudImageProps, 'fit' | 'height' | 'src' | 'width'> & {
-		breakpoints: Array<number>;
-		densities: Array<number>;
-	}
->) {
-	if (!(width && height)) {
-		return '';
-	}
+const defaultBreakpoints = [
+	300, 400, 450, 500, 600, 700, 750, 800, 900, 1000, 1050, 1200, 1400,
+];
 
-	const srcSet: Array<string> = [];
-
-	for (const breakpoint of breakpoints) {
-		for (const density of densities) {
-			const scaledWidth = Math.round(breakpoint * density);
-			const scaledHeight = Math.round((scaledWidth / width) * height);
-			srcSet.push(
-				`${src}?width=${scaledWidth}&height=${scaledHeight}&fit=${fit} ${scaledWidth}w`,
-			);
-		}
+function parseURL(src: string): URL {
+	try {
+		return new URL(src);
+	} catch {
+		throw new Error(`Invalid image source: ${src}`);
 	}
-
-	return srcSet.join(', ');
 }
