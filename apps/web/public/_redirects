@@ -1,0 +1,6 @@
+# Redirect non-www traffic to www on .dev domain
+https://lukebennett.dev/* https://www.lukebennett.dev/:splat 301!
+
+# Redirect all traffic from .com.au (both www and non-www) to www on .dev domain
+https://lukebennett.com.au/* https://www.lukebennett.dev/:splat 301!
+https://www.lukebennett.com.au/* https://www.lukebennett.dev/:splat 301!

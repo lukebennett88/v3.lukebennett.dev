@@ -20,6 +20,6 @@ export default defineConfig({
 	server: {
 		host: true,
 	},
-	site: 'https://www.lukebennett.com.au',
+	site: 'https://www.lukebennett.dev',
 	trailingSlash: 'never',
 });
