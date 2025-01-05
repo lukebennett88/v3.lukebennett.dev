@@ -1,24 +1,25 @@
 import markdoc from '@astrojs/markdoc';
+import netlify from '@astrojs/netlify';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
-import vercel from '@astrojs/vercel';
 import keystatic from '@keystatic/astro';
 import { defineConfig } from 'astro/config';
 
 /** @see https://astro.build/config */
 export default defineConfig({
-	adapter: vercel({
-		edgeMiddleware: false,
-		webAnalytics: {
-			enabled: true,
-		},
+	adapter: netlify({
+		edgeMiddleware: true,
+		imageCDN: true,
 	}),
+	build: {
+		format: 'file',
+	},
 	integrations: [keystatic(), markdoc(), react(), sitemap(), tailwind()],
 	output: 'static',
-	site: 'https://www.lukebennett.com.au',
 	server: {
 		host: true,
 	},
+	site: 'https://www.lukebennett.com.au',
 	trailingSlash: 'never',
 });

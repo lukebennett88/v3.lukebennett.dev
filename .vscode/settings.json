@@ -2,8 +2,25 @@
 	"[astro]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
+	"[javascript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
 	"biome.enabled": true,
 	"editor.codeActionsOnSave": {
+		"quickFix.biome": "explicit",
+		"source.fixAll.biome": "explicit",
 		"source.fixAll.eslint": "explicit",
 		"source.organizeImports.biome": "explicit"
 	},

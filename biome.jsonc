@@ -8,11 +8,15 @@
 	"files": {
 		"ignore": [
 			"**/.astro/**",
+			"**/.netlify/**",
+			"**/.next/**",
 			"**/.turbo/**",
 			"**/.vercel/**",
+			"**/build/**",
 			"**/coverage/**",
 			"**/dist/**",
 			"**/node_modules/**",
+			"**/out/**",
 			"**/pnpm-lock.yaml",
 			"**/tsconfig.tsbuildinfo"
 		]
