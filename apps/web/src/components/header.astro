@@ -26,7 +26,7 @@ const pathname = Astro.url.pathname;
 	><div class="flex flex-1 items-center">
 		<a
 			class={cn(
-				'h-11 w-11 rounded-full bg-white p-1 font-sans shadow transition-colors',
+				'h-11 w-11 rounded-full bg-white p-1 font-sans shadow-sm transition-colors',
 				'text-teal-700 hover:text-teal-600',
 				'dark:bg-teal-600 dark:text-gray-900 dark:hover:bg-teal-500',
 				packs.focusVisible,
@@ -66,7 +66,7 @@ const pathname = Astro.url.pathname;
 								class={cn(
 									isHighlighted
 										? [
-												'shadow',
+												'shadow-sm',
 												'bg-gray-100 hover:bg-white active:bg-gray-100',
 												'dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-800',
 											]

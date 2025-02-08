@@ -36,7 +36,7 @@ const year = new Date().getFullYear();
 ---
 
 <footer
-	class="mx-auto flex w-full max-w-4xl flex-col items-center justify-between gap-4 px-4 py-8 text-gray-700 dark:text-gray-400 sm:px-6 lg:px-8"
+	class="mx-auto flex w-full max-w-4xl flex-col items-center justify-between gap-4 px-4 py-8 text-gray-700 sm:px-6 lg:px-8 dark:text-gray-400"
 >
 	<nav
 		aria-label="RSS Feeds"
@@ -61,7 +61,7 @@ const year = new Date().getFullYear();
 				socialLinks.map(({ label, href, icon: Icon }) => (
 					<li>
 						<a
-							class="block rounded text-gray-500 transition-colors duration-200 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+							class="block rounded-sm text-gray-500 transition-colors duration-200 hover:text-gray-700 focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2 focus-visible:outline-hidden dark:focus-visible:ring-offset-gray-900"
 							href={href}
 							rel="me"
 						>

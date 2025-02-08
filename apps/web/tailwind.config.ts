@@ -1,6 +1,6 @@
 import typographyPlugin from '@tailwindcss/typography';
 import type { Config } from 'tailwindcss';
-import { zinc } from 'tailwindcss/colors';
+import colors from 'tailwindcss/colors';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import plugin from 'tailwindcss/plugin';
 
@@ -56,7 +56,7 @@ export default {
 				},
 			},
 			colors: {
-				gray: zinc,
+				gray: colors.zinc,
 			},
 			fontFamily: {
 				sans: fontStackSansArray,
