@@ -15,11 +15,11 @@ type CloudImageProps = Omit<ImageProps, 'height' | 'layout' | 'width'> & {
 
 	/**
 	 * How the image should be resized to fit its container.
-	 * - ‘scale-down’: Scale down to fit.
-	 * - ‘contain’: Scale to fit, preserving aspect ratio.
-	 * - ‘cover’: Scale to fill, preserving aspect ratio.
-	 * - ‘crop’: Scale to fill, cropping edges if necessary.
-	 * @default ‘scale-down’
+	 * - 'scale-down': Scale down to fit.
+	 * - 'contain': Scale to fit, preserving aspect ratio.
+	 * - 'cover': Scale to fill, preserving aspect ratio.
+	 * - 'crop': Scale to fill, cropping edges if necessary.
+	 * @default 'scale-down'
 	 */
 	fit?: 'scale-down' | 'contain' | 'cover' | 'crop';
 
@@ -40,8 +40,8 @@ export function CloudImage(props: CloudImageProps) {
 		aspectRatio: originalAspectRatio,
 		breakpoints = defaultBreakpoints,
 		caption,
-		cdn = 'imgix',
 		className,
+		fallback = 'imgix',
 		fit = 'scale-down',
 		height: originalHeight,
 		loading,
@@ -107,11 +107,17 @@ export function CloudImage(props: CloudImageProps) {
 	const img = (
 		<Image
 			alt={alt}
-			aspectRatio={finalAspectRatio}
+			aspectRatio={
+				// Can't set aspect radio when height and width are provided
+				finalAspectRatio as undefined
+			}
 			background="auto"
 			breakpoints={breakpoints}
-			cdn={cdn}
-			className={cn('rounded-lg bg-white dark:bg-gray-800', className)}
+			className={cn(
+				'rounded-lg bg-white dark:bg-gray-800 object-cover',
+				className,
+			)}
+			fallback={fallback}
 			height={
 				// Unpic will correctly handle undefined values, but they types error so
 				// we need to do a type assertion here
@@ -119,7 +125,6 @@ export function CloudImage(props: CloudImageProps) {
 			}
 			layout="constrained"
 			loading={loading}
-			objectFit="cover"
 			priority={priority}
 			src={srcUrl.toString()}
 			width={
