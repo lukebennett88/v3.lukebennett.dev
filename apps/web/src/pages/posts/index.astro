@@ -24,7 +24,7 @@ const posts = sortPosts(await reader.collections.posts.all()).filter((post) =>
 				posts.map(({ slug, entry }) => (
 					<li
 						class={cn(
-							'prose break-words bg-white p-4 shadow dark:prose-invert dark:bg-gray-800 sm:rounded-xl',
+							'prose dark:prose-invert bg-white p-4 break-words shadow-sm sm:rounded-xl dark:bg-gray-800',
 							entry.isDraft && 'border-2 border-dashed border-yellow-500',
 						)}
 					>
