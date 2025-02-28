@@ -25,13 +25,13 @@ importers:
     dependencies:
       '@astrojs/markdoc':
         specifier: ^0.12.4
-        version: 0.12.4(@types/react@18.3.12)(astro@5.1.1(idb-keyval@6.2.1)(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1))(react@18.3.1)
+        version: 0.12.4(@types/react@18.3.18)(astro@5.1.1(idb-keyval@6.2.1)(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1))(react@18.3.1)
       '@astrojs/netlify':
         specifier: ^6.0.1
         version: 6.0.1(astro@5.1.1(idb-keyval@6.2.1)(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1))(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.29.1)(yaml@2.6.1)
       '@astrojs/react':
         specifier: ^4.1.2
-        version: 4.1.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(yaml@2.6.1)
+        version: 4.1.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(yaml@2.6.1)
       '@astrojs/rss':
         specifier: ^4.0.10
         version: 4.0.10
@@ -82,7 +82,7 @@ importers:
         version: 2.6.0
       tailwindcss:
         specifier: ^4.0.0
-        version: 4.0.1
+        version: 4.0.5
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
@@ -95,13 +95,13 @@ importers:
         version: link:../../packages/tsconfig
       '@tailwindcss/typography':
         specifier: ^0.5.15
-        version: 0.5.15(tailwindcss@4.0.1)
+        version: 0.5.15(tailwindcss@4.0.5)
       '@types/react':
-        specifier: 18.3.12
-        version: 18.3.12
+        specifier: 18.3.18
+        version: 18.3.18
       '@types/react-dom':
-        specifier: 18.3.1
-        version: 18.3.1
+        specifier: 18.3.5
+        version: 18.3.5(@types/react@18.3.18)
       prettier:
         specifier: ^3.4.2
         version: 3.4.2
@@ -112,8 +112,8 @@ importers:
         specifier: ^0.6.9
         version: 0.6.9(prettier-plugin-astro@0.14.1)(prettier@3.4.2)
       react-compiler-runtime:
-        specifier: 19.0.0-beta-201e55d-20241215
-        version: 19.0.0-beta-201e55d-20241215(react@18.3.1)
+        specifier: 19.0.0-beta-e1e972c-20250221
+        version: 19.0.0-beta-e1e972c-20250221(react@18.3.1)
 
   packages/tsconfig: {}
 
@@ -1798,11 +1798,13 @@ packages:
   '@types/prop-types@15.7.14':
     resolution: {integrity: sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ==}
 
-  '@types/react-dom@18.3.1':
-    resolution: {integrity: sha512-qW1Mfv8taImTthu4KoXgDfLuk4bydU6Q/TkADnDWWHwi4NX4BR+LWfTp2sVmTqRrsHvyDDTelgelxJ+SsejKKQ==}
+  '@types/react-dom@18.3.5':
+    resolution: {integrity: sha512-P4t6saawp+b/dFrUr2cvkVsfvPguwsxtH6dNIYRllMsefqFzkZk5UIjzyDOv5g1dXIPdG4Sp1yCR4Z6RCUsG/Q==}
+    peerDependencies:
+      '@types/react': ^18.0.0
 
-  '@types/react@18.3.12':
-    resolution: {integrity: sha512-D2wOSq/d6Agt28q7rSI3jhU7G6aiuzljDGZ2hTZHIkrTLUI+AF3WMeKkEZ9nN2fkBAlcktT6vcZjDFiIhMYEQw==}
+  '@types/react@18.3.18':
+    resolution: {integrity: sha512-t4yC+vtgnkYjNSKlFx1jkAhH8LgTo2N/7Qvi83kdEaUtMDiwpbLAktKDaAMlRcJ5eSxZkH74eEGt1ky31d7kfQ==}
 
   '@types/sax@1.2.7':
     resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
@@ -3250,10 +3252,10 @@ packages:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
 
-  react-compiler-runtime@19.0.0-beta-201e55d-20241215:
-    resolution: {integrity: sha512-jBEo/UqVgiz6veJjhQMoNaGQLKUQwzMQpiYrA4XsGVOC2sElDF0oMjic5107LitP988yHrqDDZwZirS4OAEqyA==}
+  react-compiler-runtime@19.0.0-beta-e1e972c-20250221:
+    resolution: {integrity: sha512-6nONLW+4zbfAt6mLG6SV73tKlZLJqmezqX0EF9ZKzab84Pje/4CMVs8QVw4OeRS+FFtPcfWU4fOK28nq7lM4Hg==}
     peerDependencies:
-      react: ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0 || ^0.0.0-experimental
 
   react-dom@18.3.1:
     resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
@@ -3536,9 +3538,6 @@ packages:
 
   tailwind-merge@2.6.0:
     resolution: {integrity: sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA==}
-
-  tailwindcss@4.0.1:
-    resolution: {integrity: sha512-UK5Biiit/e+r3i0O223bisoS5+y7ZT1PM8Ojn0MxRHzXN1VPZ2KY6Lo6fhu1dOfCfyUAlK7Lt6wSxowRabATBw==}
 
   tailwindcss@4.0.5:
     resolution: {integrity: sha512-DZZIKX3tA23LGTjHdnwlJOTxfICD1cPeykLLsYF1RQBI9QsCR3i0szohJfJDVjr6aNRAIio5WVO7FGB77fRHwg==}
@@ -4129,12 +4128,12 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@astrojs/markdoc@0.12.4(@types/react@18.3.12)(astro@5.1.1(idb-keyval@6.2.1)(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1))(react@18.3.1)':
+  '@astrojs/markdoc@0.12.4(@types/react@18.3.18)(astro@5.1.1(idb-keyval@6.2.1)(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1))(react@18.3.1)':
     dependencies:
       '@astrojs/internal-helpers': 0.4.2
       '@astrojs/markdown-remark': 6.0.1
       '@astrojs/prism': 3.2.0
-      '@markdoc/markdoc': 0.4.0(@types/react@18.3.12)(react@18.3.1)
+      '@markdoc/markdoc': 0.4.0(@types/react@18.3.18)(react@18.3.1)
       astro: 5.1.1(idb-keyval@6.2.1)(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1)
       esbuild: 0.21.5
       github-slugger: 2.0.0
@@ -4197,10 +4196,10 @@ snapshots:
     dependencies:
       prismjs: 1.29.0
 
-  '@astrojs/react@4.1.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(yaml@2.6.1)':
+  '@astrojs/react@4.1.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(yaml@2.6.1)':
     dependencies:
-      '@types/react': 18.3.12
-      '@types/react-dom': 18.3.1
+      '@types/react': 18.3.18
+      '@types/react-dom': 18.3.5(@types/react@18.3.18)
       '@vitejs/plugin-react': 4.3.4(vite@6.0.6(jiti@2.4.2)(lightningcss@1.29.1)(yaml@2.6.1))
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -4900,7 +4899,7 @@ snapshots:
       '@react-types/switch': 3.5.7(react@18.3.1)
       '@react-types/table': 3.10.3(react@18.3.1)
       '@react-types/tabs': 3.3.11(react@18.3.1)
-      '@types/react': 18.3.12
+      '@types/react': 18.3.18
       emery: 1.4.3
       facepaint: 1.2.1
       react: 18.3.1
@@ -4912,7 +4911,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.26.0
       '@keystatic/core': 0.5.42(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@types/react': 18.3.12
+      '@types/react': 18.3.18
       astro: 5.1.1(idb-keyval@6.2.1)(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -4927,7 +4926,7 @@ snapshots:
       '@floating-ui/react': 0.24.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@internationalized/string': 3.2.5
       '@keystar/ui': 0.7.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@markdoc/markdoc': 0.4.0(@types/react@18.3.12)(react@18.3.1)
+      '@markdoc/markdoc': 0.4.0(@types/react@18.3.18)(react@18.3.1)
       '@react-aria/focus': 3.19.0(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
@@ -4944,7 +4943,7 @@ snapshots:
       '@sindresorhus/slugify': 1.1.2
       '@toeverything/y-indexeddb': 0.10.0-canary.9(yjs@13.6.21)
       '@ts-gql/tag': 0.7.3(graphql@16.10.0)
-      '@types/react': 18.3.12
+      '@types/react': 18.3.18
       '@urql/core': 5.1.0(graphql@16.10.0)
       '@urql/exchange-auth': 2.2.0(@urql/core@5.1.0(graphql@16.10.0))
       '@urql/exchange-graphcache': 7.2.1(@urql/core@5.1.0(graphql@16.10.0))(graphql@16.10.0)
@@ -5039,10 +5038,10 @@ snapshots:
       - encoding
       - supports-color
 
-  '@markdoc/markdoc@0.4.0(@types/react@18.3.12)(react@18.3.1)':
+  '@markdoc/markdoc@0.4.0(@types/react@18.3.18)(react@18.3.1)':
     optionalDependencies:
       '@types/markdown-it': 12.2.3
-      '@types/react': 18.3.12
+      '@types/react': 18.3.18
       react: 18.3.1
 
   '@netlify/functions@2.8.2':
@@ -6188,13 +6187,13 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.0.5
       '@tailwindcss/oxide-win32-x64-msvc': 4.0.5
 
-  '@tailwindcss/typography@0.5.15(tailwindcss@4.0.1)':
+  '@tailwindcss/typography@0.5.15(tailwindcss@4.0.5)':
     dependencies:
       lodash.castarray: 4.4.0
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
-      tailwindcss: 4.0.1
+      tailwindcss: 4.0.5
 
   '@tailwindcss/vite@4.0.5(vite@6.0.6(jiti@2.4.2)(lightningcss@1.29.1)(yaml@2.6.1))':
     dependencies:
@@ -6290,11 +6289,11 @@ snapshots:
 
   '@types/prop-types@15.7.14': {}
 
-  '@types/react-dom@18.3.1':
+  '@types/react-dom@18.3.5(@types/react@18.3.18)':
     dependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.3.18
 
-  '@types/react@18.3.12':
+  '@types/react@18.3.18':
     dependencies:
       '@types/prop-types': 15.7.14
       csstype: 3.1.3
@@ -8096,7 +8095,7 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
-  react-compiler-runtime@19.0.0-beta-201e55d-20241215(react@18.3.1):
+  react-compiler-runtime@19.0.0-beta-e1e972c-20250221(react@18.3.1):
     dependencies:
       react: 18.3.1
 
@@ -8472,8 +8471,6 @@ snapshots:
   tabbable@6.2.0: {}
 
   tailwind-merge@2.6.0: {}
-
-  tailwindcss@4.0.1: {}
 
   tailwindcss@4.0.5: {}
 
