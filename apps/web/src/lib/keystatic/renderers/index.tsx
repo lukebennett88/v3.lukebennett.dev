@@ -9,7 +9,12 @@ import { Heading } from './heading';
 import { InlineCode } from './inline-code';
 import { Link } from './link';
 
-export function getDocumentRenderers(highlighter: Highlighter) {
+/**
+ * Returns Keystatic document renderers for Code, Headings etc.
+ */
+export function getDocumentRenderers(
+	highlighter: Highlighter,
+): DocumentRendererProps['renderers'] {
 	return {
 		block: {
 			code(props) {
@@ -27,11 +32,16 @@ export function getDocumentRenderers(highlighter: Highlighter) {
 				return <Link {...props} />;
 			},
 		},
-	} satisfies DocumentRendererProps['renderers'];
+	};
 }
 
-export const componentBlockRenderers = {
+/**
+ * Returns renderers for Keystatic component blocks.
+ */
+export const componentBlockRenderers: InferRenderersForComponentBlocks<
+	typeof componentBlocks
+> = {
 	cloudImage(props) {
 		return <CloudImage {...props} />;
 	},
-} satisfies InferRenderersForComponentBlocks<typeof componentBlocks>;
+};

@@ -11,7 +11,7 @@ type Props = {
 const { document, publishedAt } = Astro.props;
 ---
 
-<div class="prose mx-auto dark:prose-invert">
+<div class="prose dark:prose-invert mx-auto">
 	<time class="block text-sm" datetime={publishedAt}>
 		{formatToAustralianDate(publishedAt)}
 	</time>
