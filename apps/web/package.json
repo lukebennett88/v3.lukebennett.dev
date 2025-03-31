@@ -20,7 +20,7 @@
 		"start": "npx serve dist/client"
 	},
 	"dependencies": {
-		"@astrojs/markdoc": "^0.12.10",
+		"@astrojs/markdoc": "^0.13.0",
 		"@astrojs/netlify": "^6.2.2",
 		"@astrojs/react": "^4.2.1",
 		"@astrojs/rss": "^4.0.11",
