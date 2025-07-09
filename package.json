@@ -15,7 +15,7 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=./packages/*",
-		"build:web": "turbo run build --filter=web...",
+		"build:web": "turbo run build --filter=@lukebennett/web...",
 		"check": "turbo run check:format check:lint check:types",
 		"check:format": "turbo run check:format",
 		"check:lint": "turbo run check:lint",
@@ -46,10 +46,5 @@
 	"manypkg": {
 		"defaultBranch": "main",
 		"workspaceProtocol": "require"
-	},
-	"pnpm": {
-		"overrides": {
-			"@types/react": "18.3.12"
-		}
 	}
 }

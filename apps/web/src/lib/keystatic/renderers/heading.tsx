@@ -78,8 +78,15 @@ function getTextNode(node: React.ReactNode): string {
 		return node.text;
 	}
 
-	if (typeof node === 'object' && 'props' in node && 'node' in node.props) {
-		return getTextNode(node.props.node);
+	if (
+		typeof node === 'object' &&
+		node !== null &&
+		'props' in node &&
+		typeof node.props === 'object' &&
+		node.props !== null &&
+		'node' in node.props
+	) {
+		return getTextNode((node.props as { node: React.ReactNode }).node);
 	}
 
 	return '';
