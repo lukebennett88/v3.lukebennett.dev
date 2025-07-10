@@ -45,7 +45,7 @@ export async function getSortedEntries() {
 
 export function toIsoString(date: unknown): string {
 	return (
-		// biome-ignore lint/style/noNonNullAssertion:
+		// biome-ignore lint/style/noNonNullAssertion: split always returns array with at least one element
 		new Date(typeof date === 'string' ? date : startDate)
 			.toISOString()
 			.split('T')[0]!

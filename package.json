@@ -34,7 +34,7 @@
 		"sort:packages": "npx sort-package-json 'package.json' './apps/*/package.json' './packages/*/package.json'"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
+		"@biomejs/biome": "^2.0.6",
 		"@manypkg/cli": "^0.23.0",
 		"turbo": "^2.5.0",
 		"typescript": "^5.8.3"

@@ -1,24 +1,25 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
 	"css": {
 		"formatter": {
 			"quoteStyle": "single"
 		}
 	},
 	"files": {
-		"ignore": [
-			"**/.astro/**",
-			"**/.netlify/**",
-			"**/.next/**",
-			"**/.turbo/**",
-			"**/.vercel/**",
-			"**/build/**",
-			"**/coverage/**",
-			"**/dist/**",
-			"**/node_modules/**",
-			"**/out/**",
-			"**/pnpm-lock.yaml",
-			"**/tsconfig.tsbuildinfo"
+		"includes": [
+			"**",
+			"!**/.astro/**",
+			"!**/.netlify/**",
+			"!**/.next/**",
+			"!**/.turbo/**",
+			"!**/.vercel/**",
+			"!**/build/**",
+			"!**/coverage/**",
+			"!**/dist/**",
+			"!**/node_modules/**",
+			"!**/out/**",
+			"!**/pnpm-lock.yaml",
+			"!**/tsconfig.tsbuildinfo"
 		]
 	},
 	"formatter": {
@@ -47,35 +48,27 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"all": true,
 			"a11y": {
-				"all": true,
 				"noAriaHiddenOnFocusable": "off",
 				"noRedundantRoles": "off",
 				"noSvgWithoutTitle": "off",
 				"useSemanticElements": "off"
 			},
-			"complexity": {
-				"all": true
-			},
+			"complexity": {},
 			"correctness": {
-				"all": true,
 				"noNodejsModules": "off",
 				"noUndeclaredDependencies": "off",
 				"useImportExtensions": "off"
 			},
 			"performance": {
-				"all": true
+				"noNamespaceImport": "off"
 			},
 			"security": {
-				"all": true,
 				"noDangerouslySetInnerHtml": "off"
 			},
 			"style": {
-				"all": true,
 				"noDefaultExport": "off",
 				"noImplicitBoolean": "off",
-				"noNamespaceImport": "off",
 				"useBlockStatements": "off",
 				"useConsistentArrayType": {
 					"level": "warn",
@@ -85,24 +78,41 @@
 				},
 				"useFilenamingConvention": "off",
 				"useNamingConvention": "off",
-				"useShorthandArrayType": "off"
+				"noParameterAssign": "error",
+				"useAsConstAssertion": "error",
+				"useDefaultParameterLast": "error",
+				"useEnumInitializers": "error",
+				"useSelfClosingElements": "error",
+				"useSingleVarDeclarator": "error",
+				"noUnusedTemplateLiteral": "error",
+				"useNumberNamespace": "error",
+				"noInferrableTypes": "error",
+				"noUselessElse": "error"
 			},
 			"suspicious": {
-				"all": true,
 				"noArrayIndexKey": "off",
-				"noConsoleLog": "off",
 				"noEmptyBlockStatements": "off",
 				"noExplicitAny": "off",
-				"noReactSpecificProps": "off"
+				"noReactSpecificProps": "off",
+				"noConsole": {
+					"level": "off",
+					"options": {
+						"allow": ["log"]
+					}
+				}
 			}
 		}
 	},
-	"organizeImports": {
-		"enabled": true
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
 	},
 	"overrides": [
 		{
-			"include": ["**/*.astro"],
+			"includes": ["**/*.astro"],
 			"linter": {
 				"rules": {
 					"correctness": {
