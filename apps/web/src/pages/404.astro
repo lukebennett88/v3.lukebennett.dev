@@ -1,0 +1,22 @@
+---
+import { Me } from '../components/me';
+import Layout from '../layouts/layout.astro';
+import { Heading } from '../lib/keystatic/renderers/heading';
+import { Link } from '../lib/keystatic/renderers/link';
+---
+
+<Layout
+	title="404 - Page Not Found"
+	description="The page you're looking for doesn't exist."
+>
+	<div class="prose dark:prose-invert mx-auto max-w-prose text-center">
+		<Heading level={1}>Page Not Found</Heading>
+		<Me className="mx-auto max-w-sm" />
+		<p class="text-lg text-gray-600 dark:text-gray-400">
+			Sorry, there is nothing at this URL.
+		</p>
+		<p>
+			<Link href="/"><span aria-hidden="true">← </span>Back to Home</Link>
+		</p>
+	</div>
+</Layout>
