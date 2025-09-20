@@ -1,35 +1,32 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on",
+				"useSortedAttributes": "on",
+				"useSortedKeys": "off",
+				"useSortedProperties": "on"
+			}
+		},
+		"enabled": true
+	},
 	"css": {
 		"formatter": {
 			"quoteStyle": "single"
+		},
+		"linter": {
+			"enabled": true
 		}
 	},
 	"files": {
-		"includes": [
-			"**",
-			"!**/.astro/**",
-			"!**/.netlify/**",
-			"!**/.next/**",
-			"!**/.turbo/**",
-			"!**/.vercel/**",
-			"!**/build/**",
-			"!**/coverage/**",
-			"!**/dist/**",
-			"!**/node_modules/**",
-			"!**/out/**",
-			"!**/pnpm-lock.yaml",
-			"!**/tsconfig.tsbuildinfo"
-		]
+		"experimentalScannerIgnores": [".git"],
+		"ignoreUnknown": false,
+		"includes": ["**/*.{ts,tsx,js,jsx,json,css}", "!src/routeTree.gen.ts"]
 	},
 	"formatter": {
-		"attributePosition": "auto",
 		"enabled": true,
-		"formatWithErrors": true,
-		"indentStyle": "tab",
-		"indentWidth": 2,
-		"lineEnding": "lf",
-		"lineWidth": 80
+		"indentStyle": "tab"
 	},
 	"javascript": {
 		"formatter": {
@@ -46,6 +43,10 @@
 		"globals": ["JSX", "React"]
 	},
 	"linter": {
+		"domains": {
+			"react": "recommended",
+			"test": "recommended"
+		},
 		"enabled": true,
 		"rules": {
 			"a11y": {
@@ -54,11 +55,19 @@
 				"noSvgWithoutTitle": "off",
 				"useSemanticElements": "off"
 			},
-			"complexity": {},
+			"complexity": {
+				"useLiteralKeys": "off"
+			},
 			"correctness": {
 				"noNodejsModules": "off",
 				"noUndeclaredDependencies": "off",
 				"useImportExtensions": "off"
+			},
+			"nursery": {
+				"useSortedClasses": {
+					"fix": "safe",
+					"level": "warn"
+				}
 			},
 			"performance": {
 				"noNamespaceImport": "off"
@@ -69,6 +78,11 @@
 			"style": {
 				"noDefaultExport": "off",
 				"noImplicitBoolean": "off",
+				"noInferrableTypes": "error",
+				"noParameterAssign": "error",
+				"noUnusedTemplateLiteral": "error",
+				"noUselessElse": "error",
+				"useAsConstAssertion": "error",
 				"useBlockStatements": "off",
 				"useConsistentArrayType": {
 					"level": "warn",
@@ -76,54 +90,33 @@
 						"syntax": "generic"
 					}
 				},
-				"useFilenamingConvention": "off",
-				"useNamingConvention": "off",
-				"noParameterAssign": "error",
-				"useAsConstAssertion": "error",
 				"useDefaultParameterLast": "error",
 				"useEnumInitializers": "error",
-				"useSelfClosingElements": "error",
-				"useSingleVarDeclarator": "error",
-				"noUnusedTemplateLiteral": "error",
+				"useFilenamingConvention": "off",
+				"useNamingConvention": "off",
 				"useNumberNamespace": "error",
-				"noInferrableTypes": "error",
-				"noUselessElse": "error"
+				"useSelfClosingElements": "error",
+				"useSingleVarDeclarator": "error"
 			},
 			"suspicious": {
 				"noArrayIndexKey": "off",
-				"noEmptyBlockStatements": "off",
-				"noExplicitAny": "off",
-				"noReactSpecificProps": "off",
 				"noConsole": {
 					"level": "off",
 					"options": {
 						"allow": ["log"]
 					}
-				}
+				},
+				"noEmptyBlockStatements": "off",
+				"noExplicitAny": "off",
+				"noReactSpecificProps": "off",
+				"noUnknownAtRules": "off"
 			}
 		}
 	},
-	"assist": {
-		"actions": {
-			"source": {
-				"organizeImports": "on"
-			}
-		}
-	},
-	"overrides": [
-		{
-			"includes": ["**/*.astro"],
-			"linter": {
-				"rules": {
-					"correctness": {
-						"noUnusedImports": "off",
-						"noUnusedVariables": "off"
-					},
-					"style": {
-						"useImportType": "off"
-					}
-				}
-			}
-		}
-	]
+	"overrides": [],
+	"vcs": {
+		"clientKind": "git",
+		"enabled": true,
+		"useIgnoreFile": true
+	}
 }

@@ -114,7 +114,7 @@ export function CloudImage(props: CloudImageProps) {
 			background="auto"
 			breakpoints={breakpoints}
 			className={cn(
-				'rounded-lg bg-white dark:bg-gray-800 object-cover',
+				'rounded-lg bg-white object-cover dark:bg-gray-800',
 				className,
 			)}
 			fallback={fallback}
