@@ -1,6 +1,78 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
-@config '../tailwind.config.ts';
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer theme {
+	:root {
+		--font-sans:
+			'Source Sans 3 Variable', ui-sans-serif, system-ui, sans-serif,
+			'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+			'Noto Color Emoji';
+		--font-serif:
+			'Source Serif 4 Variable', ui-serif, Georgia, Cambria, 'Times New Roman',
+			Times, serif;
+		--font-mono:
+			'Source Code Pro Variable', ui-monospace, SFMono-Regular, 'SF Mono', Menlo,
+			Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+	}
+}
+
+@layer utilities {
+	@keyframes steamFade {
+		0%,
+		100% {
+			opacity: 0;
+		}
+		50% {
+			opacity: 1;
+		}
+	}
+
+	@keyframes steamTransform {
+		0% {
+			transform: translate3d(0, 0.5rem, 0) scale(0.9);
+		}
+		100% {
+			transform: translate3d(-0.125rem, 0, 0) scale(1.1);
+		}
+	}
+
+	.animate-steamRise {
+		animation:
+			steamFade 3s ease-in-out infinite,
+			steamTransform 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+	}
+}
+
+@layer components {
+	.prose {
+		font-family:
+			'Source Serif 4 Variable', ui-serif, Georgia, Cambria, 'Times New Roman',
+			Times, serif;
+	}
+
+	.prose h1 {
+		font-family:
+			'Source Sans 3 Variable', ui-sans-serif, system-ui, sans-serif,
+			'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+			'Noto Color Emoji';
+		text-wrap: balance;
+	}
+
+	.prose h2 {
+		font-family:
+			'Source Sans 3 Variable', ui-sans-serif, system-ui, sans-serif,
+			'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+			'Noto Color Emoji';
+		text-wrap: balance;
+	}
+
+	.prose code::before,
+	.prose code::after {
+		content: none;
+	}
+}
 
 /*
 	The default border color has changed to `currentColor` in Tailwind CSS v4,
@@ -11,6 +83,20 @@
 	color utility to any element that depends on these defaults.
 */
 @layer base {
+	/* Base styles migrated from baseStylesPlugin in tailwind.config.ts */
+	.dark {
+		color-scheme: dark;
+	}
+
+	.light {
+		color-scheme: light;
+	}
+
+	[id] {
+		scroll-margin-top: 1rem; /* equivalent to theme('spacing[4]') */
+	}
+
+	/* Existing compatibility styles for v4 */
 	*,
 	::after,
 	::before,
