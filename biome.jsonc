@@ -22,7 +22,7 @@
 	"files": {
 		"experimentalScannerIgnores": [".git"],
 		"ignoreUnknown": false,
-		"includes": ["**/*.{ts,tsx,js,jsx,json,css}", "!src/routeTree.gen.ts"]
+		"includes": ["**/*.{ts,tsx,js,jsx,json,css}"]
 	},
 	"formatter": {
 		"enabled": true,

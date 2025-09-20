@@ -19,9 +19,6 @@ export const fontStackMonoArray = [
 
 const baseStylesPlugin = plugin(({ addBase, theme }) => {
 	return addBase({
-		':root': {
-			scrollbarGutter: 'stable both-edges',
-		},
 		'.dark': {
 			colorScheme: 'dark',
 		},
