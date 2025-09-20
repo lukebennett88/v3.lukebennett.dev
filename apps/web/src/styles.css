@@ -114,4 +114,30 @@
 			scrollbar-gutter: stable;
 		}
 	}
+
+	:root {
+		--focus-outline-color-light: var(--color-teal-700);
+		--focus-outline-color-dark: var(--color-teal-700);
+		--focus-outline-color: var(--focus-outline-color-light);
+		--focus-outline-offset: 2px;
+		--focus-outline-style: solid;
+		--focus-outline-width: 2px;
+	}
+
+	.dark {
+		--focus-outline-color: var(--focus-outline-color-dark);
+	}
+
+	*:focus-visible {
+		outline-width: var(--focus-outline-width);
+		outline-style: var(--focus-outline-style);
+		outline-color: var(--focus-outline-color);
+		outline-offset: var(--focus-outline-offset);
+	}
+
+	@media (forced-colors: active) {
+		*:focus-visible {
+			outline-color: Highlight;
+		}
+	}
 }

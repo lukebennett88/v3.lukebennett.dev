@@ -1,7 +1,6 @@
 ---
 import ThemeSwitcher from '../components/theme-switcher.astro';
 import { cn } from '../lib/cn';
-import { packs } from '../lib/packs';
 
 const mainNav = [
 	{ label: 'Home', href: '/' },
@@ -18,10 +17,7 @@ const pathname = Astro.url.pathname;
 	role="banner"
 >
 	<a
-		class={cn(
-			'sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:inline-block focus-visible:rounded-full focus-visible:bg-gray-200 focus-visible:px-3 focus-visible:py-1.5 focus-visible:hover:text-gray-600 dark:focus-visible:bg-teal-700 dark:focus-visible:hover:text-white',
-			packs.focusVisible,
-		)}
+		class="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:inline-block focus-visible:rounded-full focus-visible:bg-gray-200 focus-visible:px-3 focus-visible:py-1.5 focus-visible:hover:text-gray-600 dark:focus-visible:bg-teal-700 dark:focus-visible:hover:text-white"
 		href="#main">Skip to main content</a
 	><div class="flex flex-1 items-center">
 		<a
@@ -29,7 +25,6 @@ const pathname = Astro.url.pathname;
 				'h-11 w-11 rounded-full bg-white p-1 font-sans shadow-sm transition-colors',
 				'text-teal-700 hover:text-teal-600',
 				'dark:bg-teal-600 dark:text-gray-900 dark:hover:bg-teal-500',
-				packs.focusVisible,
 			)}
 			href="/"
 			><span class="sr-only">Luke Bennett</span><svg
@@ -75,7 +70,6 @@ const pathname = Astro.url.pathname;
 												'dark:text-gray-200 dark:hover:text-teal-500 dark:active:text-teal-400',
 											],
 									'relative inline-block rounded-full px-4 py-1.5 text-xs font-medium transition',
-									packs.focusVisible,
 								)}
 								href={href}
 								transition:animate="initial"
