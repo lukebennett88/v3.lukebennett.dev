@@ -1,4 +1,4 @@
-import { type Highlighter, bundledLanguages, createHighlighter } from 'shiki';
+import { bundledLanguages, createHighlighter, type Highlighter } from 'shiki';
 
 export const highlighter: Highlighter = await createHighlighter({
 	themes: ['poimandres'],

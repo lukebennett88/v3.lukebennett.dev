@@ -13,7 +13,7 @@ const posts = sortPosts(await reader.collections.posts.all()).filter((post) =>
 	<div class="mx-auto flex max-w-prose flex-col gap-4">
 		<div class="prose dark:prose-invert">
 			<h1>Posts</h1>
-			<p class="[text-wrap:balance]">
+			<p class="text-balance">
 				Longer form content.<br />For interesting links with limited commentary,
 
 				{' '}<a href="links">check out the links section</a> instead.
@@ -24,7 +24,7 @@ const posts = sortPosts(await reader.collections.posts.all()).filter((post) =>
 				posts.map(({ slug, entry }) => (
 					<li
 						class={cn(
-							'prose dark:prose-invert bg-white p-4 break-words shadow-sm sm:rounded-xl dark:bg-gray-800',
+							'prose dark:prose-invert bg-white p-4 wrap-break-word shadow-sm sm:rounded-xl dark:bg-gray-800',
 							entry.isDraft && 'border-2 border-dashed border-yellow-500',
 						)}
 					>

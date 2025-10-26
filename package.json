@@ -29,17 +29,17 @@
 		"fix:lint": "turbo run fix:lint",
 		"format": "pnpm biome format --write",
 		"fresh": "pnpm run clean && pnpm install",
-		"preinstall": "npx only-allow pnpm",
+		"preinstall": "pnpm dlx only-allow pnpm",
 		"postinstall": "manypkg check",
-		"sort:packages": "npx sort-package-json 'package.json' './apps/*/package.json' './packages/*/package.json'"
+		"sort:packages": "pnpm dlx sort-package-json 'package.json' './apps/*/package.json' './packages/*/package.json'"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.2.4",
-		"@manypkg/cli": "^0.23.0",
-		"turbo": "^2.5.6",
-		"typescript": "^5.9.2"
+		"@biomejs/biome": "2.3.0",
+		"@manypkg/cli": "^0.25.1",
+		"turbo": "^2.5.8",
+		"typescript": "^5.9.3"
 	},
-	"packageManager": "pnpm@10.17.0+sha512.fce8a3dd29a4ed2ec566fb53efbb04d8c44a0f05bc6f24a73046910fb9c3ce7afa35a0980500668fa3573345bd644644fa98338fa168235c80f4aa17aa17fbef",
+	"packageManager": "pnpm@10.19.0+sha512.c9fc7236e92adf5c8af42fd5bf1612df99c2ceb62f27047032f4720b33f8eacdde311865e91c411f2774f618d82f320808ecb51718bfa82c060c4ba7c76a32b8",
 	"engines": {
 		"node": ">=22"
 	},
