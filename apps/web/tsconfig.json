@@ -1,6 +1,3 @@
 {
-	"extends": "@lukebennett/tsconfig/dom",
-	"compilerOptions": {
-		"baseUrl": "."
-	}
+	"extends": "@lukebennett/tsconfig/dom"
 }
