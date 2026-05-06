@@ -4,7 +4,7 @@ import Icon from './icon.astro';
 
 {/* This is intentionally inlined to avoid FOUC. */}
 <script is:inline>
-	window.ThemeProvider = (() => {
+	(() => {
 		const storedTheme =
 			typeof localStorage !== 'undefined' && localStorage.getItem('theme');
 		const theme =
@@ -12,22 +12,30 @@ import Icon from './icon.astro';
 			(window.matchMedia('(prefers-color-scheme: light)').matches
 				? 'light'
 				: 'dark');
+		document.documentElement.classList.add(theme);
+	})();
+</script>
 
-		function setThemeClass(newTheme) {
-			document.documentElement.classList.remove('light', 'dark');
-			document.documentElement.classList.add(newTheme);
+<script>
+	interface ThemeProvider {
+		updatePickers(theme?: string): void;
+	}
+
+	declare global {
+		interface Window {
+			ThemeProvider: ThemeProvider;
 		}
+	}
 
-		setThemeClass(theme);
-
-		return {
-			updatePickers(theme = storedTheme || 'auto') {
+	window.ThemeProvider = {
+		updatePickers(theme = 'auto') {
+			requestAnimationFrame(() => {
 				document.querySelectorAll('theme-select').forEach((picker) => {
 					const select = picker.querySelector('select');
 					if (select) select.value = theme;
-					/** @type {HTMLTemplateElement | null} */
-					const tmpl = document.querySelector('#theme-icons');
-					const newIcon = tmpl && tmpl.content.querySelector('.' + theme);
+					const tmpl =
+						document.querySelector<HTMLTemplateElement>('#theme-icons');
+					const newIcon = tmpl?.content.querySelector('.' + theme);
 					if (newIcon) {
 						const oldIcon = picker.querySelector('svg.label-icon');
 						if (oldIcon) {
@@ -35,9 +43,9 @@ import Icon from './icon.astro';
 						}
 					}
 				});
-			},
-		};
-	})();
+			});
+		},
+	};
 </script>
 
 <template id="theme-icons">

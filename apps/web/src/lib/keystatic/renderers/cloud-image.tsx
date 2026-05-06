@@ -7,7 +7,10 @@ const MAX_WIDTH = 700;
 /**
  * The props for the CloudImage component.
  */
-type CloudImageProps = Omit<ImageProps, 'height' | 'layout' | 'width'> & {
+type CloudImageProps = Omit<
+	ImageProps,
+	'height' | 'layout' | 'width' | 'priority'
+> & {
 	/**
 	 * The caption for the image.
 	 */
@@ -27,6 +30,12 @@ type CloudImageProps = Omit<ImageProps, 'height' | 'layout' | 'width'> & {
 	 * The height of the image.
 	 */
 	height?: number | null;
+
+	/**
+	 * Whether the image should be prioritized for loading (LCP image).
+	 * @default false
+	 */
+	priority?: boolean;
 
 	/**
 	 * The width of the image.
@@ -124,7 +133,7 @@ export function CloudImage(props: CloudImageProps) {
 				finalHeight as number
 			}
 			layout="constrained"
-			loading={loading}
+			loading={priority ? 'eager' : loading}
 			priority={priority}
 			src={srcUrl.toString()}
 			width={
