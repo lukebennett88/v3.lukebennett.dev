@@ -1,7 +1,5 @@
 ---
-import '@fontsource-variable/source-code-pro';
-import '@fontsource-variable/source-sans-3';
-import '@fontsource-variable/source-serif-4';
+import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import Footer from '../components/footer.astro';
 import Header from '../components/header.astro';
@@ -31,6 +29,9 @@ const ogImage = new URL('/og.jpg', Astro.site).toString();
 <!doctype html>
 <html lang="en-AU" class="font-sans text-xl antialiased">
 	<head>
+		<Font cssVariable="--font-sans" preload />
+		<Font cssVariable="--font-serif" preload />
+		<Font cssVariable="--font-mono" preload />
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{title}</title>

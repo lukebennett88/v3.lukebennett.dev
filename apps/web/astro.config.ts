@@ -4,7 +4,7 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import keystatic from '@keystatic/astro';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 
 /** @see https://astro.build/config */
 export default defineConfig({
@@ -15,6 +15,64 @@ export default defineConfig({
 	build: {
 		format: 'file',
 	},
+	experimental: {
+		queuedRendering: {
+			enabled: true,
+			contentCache: true,
+		},
+		rustCompiler: true,
+	},
+	fonts: [
+		{
+			name: 'Source Sans 3',
+			cssVariable: '--font-sans',
+			provider: fontProviders.fontsource(),
+			weights: ['200 900'],
+			styles: ['normal'],
+			fallbacks: [
+				'ui-sans-serif',
+				'system-ui',
+				'sans-serif',
+				'Apple Color Emoji',
+				'Segoe UI Emoji',
+				'Segoe UI Symbol',
+				'Noto Color Emoji',
+			],
+		},
+		{
+			name: 'Source Serif 4',
+			cssVariable: '--font-serif',
+			provider: fontProviders.fontsource(),
+			weights: ['200 900'],
+			styles: ['normal'],
+			fallbacks: [
+				'ui-serif',
+				'Georgia',
+				'Cambria',
+				'Times New Roman',
+				'Times',
+				'serif',
+			],
+		},
+		{
+			name: 'Source Code Pro',
+			cssVariable: '--font-mono',
+			provider: fontProviders.fontsource(),
+			weights: ['200 900'],
+			styles: ['normal'],
+			fallbacks: [
+				'ui-monospace',
+				'SFMono-Regular',
+				'SF Mono',
+				'Menlo',
+				'Monaco',
+				'Consolas',
+				'Liberation Mono',
+				'Courier New',
+				'monospace',
+			],
+		},
+	],
 	integrations: [keystatic(), markdoc(), react(), sitemap()],
 	output: 'static',
 	server: {
@@ -24,5 +82,11 @@ export default defineConfig({
 	trailingSlash: 'never',
 	vite: {
 		plugins: [tailwindcss()],
+		optimizeDeps: {
+			exclude: ['virtual:keystatic-config'],
+		},
+		ssr: {
+			noExternal: ['@keystatic/astro', '@keystatic/core'],
+		},
 	},
 });
