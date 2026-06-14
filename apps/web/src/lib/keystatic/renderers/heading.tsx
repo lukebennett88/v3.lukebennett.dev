@@ -37,13 +37,13 @@ export function Heading({
 	const headingContent = (
 		<Tag
 			{...consumerProps}
-			className={cn(alignmentClass, '[text-wrap:balance]', className)}
+			className={cn(alignmentClass, 'text-balance', className)}
 			id={slug}
 		>
 			{isAnchor ? (
 				<span className="inline-flex items-center">
 					<ZeroWidthSpace />
-					<HashtagIcon className="-translate-x-full absolute me-1 h-[0.75em] max-h-[1.25rem] w-[0.75em] max-w-[1.25rem] text-gray-500" />
+					<HashtagIcon className="absolute me-1 h-[0.75em] max-h-5 w-[0.75em] max-w-5 -translate-x-full text-gray-500" />
 				</span>
 			) : null}
 			{children}
