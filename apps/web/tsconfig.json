@@ -1,3 +1,6 @@
 {
-	"extends": "@lukebennett/tsconfig/dom"
+	"extends": "@lukebennett/tsconfig/dom",
+	"compilerOptions": {
+		"allowImportingTsExtensions": true
+	}
 }

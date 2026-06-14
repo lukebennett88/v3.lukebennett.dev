@@ -11,11 +11,13 @@ import '../styles.css';
 
 export type Props = {
 	description?: string;
+	standardSiteDocumentUri?: string;
 	title?: string;
 };
 
 const {
 	description = 'Luke Bennett’s personal website',
+	standardSiteDocumentUri,
 	title = 'Luke Bennett',
 } = Astro.props;
 
@@ -57,6 +59,11 @@ const ogImage = new URL('/og.jpg', Astro.site).toString();
 			content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1"
 		/>
 		<link rel="canonical" href={canonicalUrl} />
+		{
+			standardSiteDocumentUri ? (
+				<link rel="site.standard.document" href={standardSiteDocumentUri} />
+			) : null
+		}
 		<meta name="description" content={description} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
