@@ -17,6 +17,8 @@
 		"fix:format": "pnpm exec prettier 'src/**/*.astro' --cache --write && pnpm biome format --write",
 		"fix:lint": "pnpm biome lint --write",
 		"lint": "pnpm biome lint --write",
+		"standard-site:delete-record": "node --env-file=.env.local --experimental-strip-types scripts/delete-record.ts",
+		"standard-site:list-records": "node --env-file=.env.local --experimental-strip-types scripts/list-records.ts",
 		"standard-site:sync": "node --experimental-strip-types scripts/sync-standard-site.ts",
 		"test:standard-site": "node --experimental-strip-types --test src/lib/standard-site.test.ts scripts/sync-standard-site.test.ts"
 	},
