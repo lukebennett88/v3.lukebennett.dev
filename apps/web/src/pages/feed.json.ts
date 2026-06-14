@@ -12,10 +12,8 @@ export const GET: APIRoute = async ({ site }) => {
 	const baseUrl = site.toString();
 	const sortedEntries = (await getSortedEntries()).slice(0, MAX_POSTS);
 	const body = {
-		version: 'https://jsonfeed.org/version/1.1',
-		title: 'Luke Bennett',
-		home_page_url: baseUrl,
 		feed_url: `${baseUrl}/feed.json`,
+		home_page_url: baseUrl,
 		icon: `${baseUrl}/apple-icon.png`,
 		items: await Promise.all(
 			sortedEntries.map(async ({ entry, pathname, type }) => {
@@ -35,6 +33,8 @@ export const GET: APIRoute = async ({ site }) => {
 				};
 			}),
 		),
+		title: 'Luke Bennett',
+		version: 'https://jsonfeed.org/version/1.1',
 	};
 
 	return new Response(JSON.stringify(body, null, '\t'), {

@@ -3,10 +3,10 @@ import ThemeSwitcher from '../components/theme-switcher.astro';
 import { cn } from '../lib/cn';
 
 const mainNav = [
-	{ label: 'Home', href: '/' },
-	{ label: 'Posts', href: '/posts' },
-	{ label: 'Links', href: '/links' },
-	{ label: 'Blogroll', href: '/blogroll' },
+	{ href: '/', label: 'Home' },
+	{ href: '/posts', label: 'Posts' },
+	{ href: '/links', label: 'Links' },
+	{ href: '/blogroll', label: 'Blogroll' },
 ];
 
 const pathname = Astro.url.pathname;

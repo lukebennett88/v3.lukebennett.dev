@@ -57,9 +57,9 @@ async function main() {
 	const sessionRes = await fetch(
 		`${pds}/xrpc/com.atproto.server.createSession`,
 		{
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ identifier, password }),
+			headers: { 'Content-Type': 'application/json' },
+			method: 'POST',
 		},
 	);
 	if (!sessionRes.ok) {
@@ -71,16 +71,16 @@ async function main() {
 	const session = (await sessionRes.json()) as { accessJwt: string };
 
 	const deleteRes = await fetch(`${pds}/xrpc/com.atproto.repo.deleteRecord`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${session.accessJwt}`,
-		},
 		body: JSON.stringify({
-			repo: did,
 			collection: 'site.standard.document',
+			repo: did,
 			rkey,
 		}),
+		headers: {
+			Authorization: `Bearer ${session.accessJwt}`,
+			'Content-Type': 'application/json',
+		},
+		method: 'POST',
 	});
 	if (!deleteRes.ok) {
 		console.error(

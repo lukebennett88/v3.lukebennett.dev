@@ -17,18 +17,14 @@ export default defineConfig({
 	},
 	experimental: {
 		queuedRendering: {
-			enabled: true,
 			contentCache: true,
+			enabled: true,
 		},
 		rustCompiler: true,
 	},
 	fonts: [
 		{
-			name: 'Source Sans 3',
 			cssVariable: '--font-sans',
-			provider: fontProviders.fontsource(),
-			weights: ['200 900'],
-			styles: ['normal'],
 			fallbacks: [
 				'ui-sans-serif',
 				'system-ui',
@@ -38,13 +34,13 @@ export default defineConfig({
 				'Segoe UI Symbol',
 				'Noto Color Emoji',
 			],
+			name: 'Source Sans 3',
+			provider: fontProviders.fontsource(),
+			styles: ['normal'],
+			weights: ['200 900'],
 		},
 		{
-			name: 'Source Serif 4',
 			cssVariable: '--font-serif',
-			provider: fontProviders.fontsource(),
-			weights: ['200 900'],
-			styles: ['normal'],
 			fallbacks: [
 				'ui-serif',
 				'Georgia',
@@ -53,13 +49,13 @@ export default defineConfig({
 				'Times',
 				'serif',
 			],
+			name: 'Source Serif 4',
+			provider: fontProviders.fontsource(),
+			styles: ['normal'],
+			weights: ['200 900'],
 		},
 		{
-			name: 'Source Code Pro',
 			cssVariable: '--font-mono',
-			provider: fontProviders.fontsource(),
-			weights: ['200 900'],
-			styles: ['normal'],
 			fallbacks: [
 				'ui-monospace',
 				'SFMono-Regular',
@@ -71,6 +67,10 @@ export default defineConfig({
 				'Courier New',
 				'monospace',
 			],
+			name: 'Source Code Pro',
+			provider: fontProviders.fontsource(),
+			styles: ['normal'],
+			weights: ['200 900'],
 		},
 	],
 	integrations: [keystatic(), markdoc(), react(), sitemap()],
@@ -81,10 +81,10 @@ export default defineConfig({
 	site: 'https://www.lukebennett.dev',
 	trailingSlash: 'never',
 	vite: {
-		plugins: [tailwindcss()],
 		optimizeDeps: {
 			exclude: ['virtual:keystatic-config'],
 		},
+		plugins: [tailwindcss()],
 		ssr: {
 			noExternal: ['@keystatic/astro', '@keystatic/core'],
 		},

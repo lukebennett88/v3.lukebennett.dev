@@ -262,10 +262,10 @@ async function writeManifest(
 		MANIFEST_URL,
 		`${JSON.stringify(
 			{
-				publicationUri: PUBLICATION_URI,
 				documentsBySlug: Object.fromEntries(
 					[...documentsBySlug.entries()].sort(([a], [b]) => a.localeCompare(b)),
 				),
+				publicationUri: PUBLICATION_URI,
 			},
 			null,
 			2,

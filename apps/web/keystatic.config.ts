@@ -8,6 +8,14 @@ export const config = createConfig({
 	cloud: {
 		project: 'luke-bennett/lukebennett-com-au',
 	},
+	collections: {
+		links,
+		posts,
+	},
+	singletons: {
+		blogroll,
+		homepage,
+	},
 	storage:
 		process.env.NODE_ENV === 'production'
 			? {
@@ -17,14 +25,6 @@ export const config = createConfig({
 			: {
 					kind: 'local',
 				},
-	singletons: {
-		homepage,
-		blogroll,
-	},
-	collections: {
-		posts,
-		links,
-	},
 });
 
 export default config;

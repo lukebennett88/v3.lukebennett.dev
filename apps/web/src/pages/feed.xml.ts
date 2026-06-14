@@ -14,15 +14,11 @@ export const GET: APIRoute = async ({ site }) => {
 	const sortedEntries = (await getSortedEntries()).slice(0, MAX_POSTS);
 
 	return rss({
-		// `<title>` field in output xml
-		title: 'Luke Bennett',
+		// (optional) inject custom xml
+		customData: '<language>en-AU</language>',
 
 		// `<description>` field in output xml
 		description: 'Luke Bennett’s personal website',
-
-		// Pull in your project "site" from the endpoint context
-		// https://docs.astro.build/en/reference/api-reference/#contextsite
-		site: baseUrl,
 
 		// Array of `<item>`s in output xml
 		// See "Generating items" section for examples using content collections and glob imports
@@ -44,7 +40,10 @@ export const GET: APIRoute = async ({ site }) => {
 			}),
 		),
 
-		// (optional) inject custom xml
-		customData: '<language>en-AU</language>',
+		// Pull in your project "site" from the endpoint context
+		// https://docs.astro.build/en/reference/api-reference/#contextsite
+		site: baseUrl,
+		// `<title>` field in output xml
+		title: 'Luke Bennett',
 	});
 };

@@ -29,23 +29,23 @@ export const cloudImage = component({
 		);
 	},
 	schema: {
-		src: fields.text({
-			label: 'URL',
-			validation: { length: { min: 1 } },
-		}),
 		alt: fields.text({
 			label: 'Alt text',
 		}),
 		height: fields.integer({
 			label: 'Height',
 		}),
+		priority: fields.checkbox({
+			defaultValue: false,
+			description: 'Prioritize this image for loading.',
+			label: 'Priority',
+		}),
+		src: fields.text({
+			label: 'URL',
+			validation: { length: { min: 1 } },
+		}),
 		width: fields.integer({
 			label: 'Width',
-		}),
-		priority: fields.checkbox({
-			label: 'Priority',
-			description: 'Prioritize this image for loading.',
-			defaultValue: false,
 		}),
 	},
 });

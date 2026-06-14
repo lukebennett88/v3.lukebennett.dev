@@ -34,7 +34,7 @@
 		"sort:packages": "pnpm dlx sort-package-json 'package.json' './apps/*/package.json' './packages/*/package.json'"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "catalog:",
+		"@biomejs/biome": "^2.5.0",
 		"@manypkg/cli": "catalog:",
 		"turbo": "catalog:",
 		"typescript": "catalog:"

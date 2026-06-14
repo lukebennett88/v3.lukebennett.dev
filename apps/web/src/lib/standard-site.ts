@@ -7,8 +7,8 @@ export const standardSitePublicationUri =
 
 const StandardSiteManifestSchema = z
 	.object({
-		publicationUri: z.literal(standardSitePublicationUri),
 		documentsBySlug: z.record(z.string(), z.string().startsWith('at://')),
+		publicationUri: z.literal(standardSitePublicationUri),
 	})
 	.readonly();
 

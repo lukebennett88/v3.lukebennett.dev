@@ -1,21 +1,21 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"automerge": true,
+	"baseBranches": ["main"],
 	"extends": [
 		"config:recommended",
 		"schedule:monthly",
 		":maintainLockFilesMonthly"
 	],
-	"automerge": true,
-	"baseBranches": ["main"],
 	"ignoreDeps": ["@lukebennett/tsconfig"],
 	"internalChecksFilter": "strict",
 	"minimumReleaseAge": "3 days",
 	"packageRules": [
 		{
-			"description": "Automatically merge minor and patch-level updates",
-			"matchUpdateTypes": ["minor", "patch", "digest"],
 			"automerge": true,
-			"automergeType": "branch"
+			"automergeType": "branch",
+			"description": "Automatically merge minor and patch-level updates",
+			"matchUpdateTypes": ["minor", "patch", "digest"]
 		},
 		{ "groupName": "keystatic", "matchPackagePatterns": ["@keystatic*"] },
 		{ "groupName": "react", "matchPackageNames": ["react", "react-dom"] }

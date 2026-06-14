@@ -3,18 +3,18 @@ import { collection, fields } from '@keystatic/core';
 import { content } from '../fields/content';
 
 export const posts = collection({
-	label: 'Posts',
 	entryLayout: 'content',
 	format: {
 		contentField: 'content',
 	},
+	label: 'Posts',
 	path: 'content/posts/*',
-	slugField: 'title',
 	schema: {
-		title: fields.slug({
-			name: {
-				label: 'Title',
-			},
+		content,
+		isDraft: fields.checkbox({
+			defaultValue: false,
+			description: 'Check this box to prevent this post from being published',
+			label: 'Do not publish',
 		}),
 		publishedAt: fields.date({
 			label: 'Published at',
@@ -22,11 +22,11 @@ export const posts = collection({
 				isRequired: true,
 			},
 		}),
-		isDraft: fields.checkbox({
-			label: 'Do not publish',
-			description: 'Check this box to prevent this post from being published',
-			defaultValue: false,
+		title: fields.slug({
+			name: {
+				label: 'Title',
+			},
 		}),
-		content,
 	},
+	slugField: 'title',
 });

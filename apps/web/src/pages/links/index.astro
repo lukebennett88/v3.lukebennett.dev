@@ -12,11 +12,11 @@ const links = await Promise.all(
 	posts.map(async (post) => {
 		const content = await post.entry.content();
 		return {
+			content,
+			linkedUrl: post.entry.linkedUrl,
+			publishedAt: post.entry.publishedAt,
 			slug: post.slug,
 			title: post.entry.title,
-			publishedAt: post.entry.publishedAt,
-			linkedUrl: post.entry.linkedUrl,
-			content,
 		};
 	}),
 );

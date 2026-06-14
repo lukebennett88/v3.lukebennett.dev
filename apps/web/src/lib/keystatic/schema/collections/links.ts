@@ -3,17 +3,18 @@ import { collection, fields } from '@keystatic/core';
 import { content } from '../fields/content';
 
 export const links = collection({
-	label: 'Links',
 	entryLayout: 'content',
 	format: {
 		contentField: 'content',
 	},
+	label: 'Links',
 	path: 'content/links/*',
-	slugField: 'title',
 	schema: {
-		title: fields.slug({
-			name: {
-				label: 'Title',
+		content,
+		linkedUrl: fields.url({
+			label: 'Linked URL',
+			validation: {
+				isRequired: true,
 			},
 		}),
 		publishedAt: fields.date({
@@ -22,12 +23,11 @@ export const links = collection({
 				isRequired: true,
 			},
 		}),
-		linkedUrl: fields.url({
-			label: 'Linked URL',
-			validation: {
-				isRequired: true,
+		title: fields.slug({
+			name: {
+				label: 'Title',
 			},
 		}),
-		content,
 	},
+	slugField: 'title',
 });

@@ -1,10 +1,12 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.3.0/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
 	"assist": {
 		"actions": {
 			"source": {
+				"noDuplicateClasses": "on",
 				"organizeImports": "on",
 				"useSortedAttributes": "on",
+				"useSortedInterfaceMembers": "on",
 				"useSortedKeys": "off",
 				"useSortedProperties": "on"
 			}
@@ -23,27 +25,15 @@
 		}
 	},
 	"files": {
-		"ignoreUnknown": false,
-		"includes": ["**/*.{css,js,json,jsx,ts,tsx}", "!!**/.git", "!!**/*.astro"]
+		"ignoreUnknown": false
 	},
 	"formatter": {
-		"enabled": true,
-		"formatWithErrors": true,
-		"indentStyle": "tab"
+		"enabled": true
 	},
 	"javascript": {
 		"formatter": {
-			"arrowParentheses": "always",
-			"attributePosition": "auto",
-			"bracketSameLine": false,
-			"bracketSpacing": true,
-			"jsxQuoteStyle": "double",
-			"quoteProperties": "asNeeded",
-			"quoteStyle": "single",
-			"semicolons": "always",
-			"trailingCommas": "all"
-		},
-		"globals": ["JSX", "React"]
+			"quoteStyle": "single"
+		}
 	},
 	"linter": {
 		"domains": {
@@ -68,7 +58,7 @@
 			},
 			"nursery": {
 				"useSortedClasses": {
-					"fix": "safe",
+					"fix": "unsafe",
 					"level": "warn"
 				}
 			},
@@ -116,7 +106,26 @@
 			}
 		}
 	},
-	"overrides": [],
+	"overrides": [
+		{
+			// Biome only analyses the Astro frontmatter script, not the template
+			// body, so it can't see imports used in markup (e.g. `<Icon />`,
+			// `set:html={Icons[name]}`, `class={cn(...)}`). Disable the rules that
+			// would otherwise produce false positives and auto-break value imports.
+			"includes": ["**/*.astro"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedImports": "off",
+						"noUnusedVariables": "off"
+					},
+					"style": {
+						"useImportType": "off"
+					}
+				}
+			}
+		}
+	],
 	"vcs": {
 		"clientKind": "git",
 		"enabled": true,

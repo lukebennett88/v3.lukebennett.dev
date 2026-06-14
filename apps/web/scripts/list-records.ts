@@ -42,9 +42,9 @@ async function main() {
 	const sessionRes = await fetch(
 		`${pds}/xrpc/com.atproto.server.createSession`,
 		{
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ identifier, password }),
+			headers: { 'Content-Type': 'application/json' },
+			method: 'POST',
 		},
 	);
 	if (!sessionRes.ok) {

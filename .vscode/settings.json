@@ -26,10 +26,10 @@
 	},
 	"editor.defaultFormatter": "biomejs.biome",
 	"editor.formatOnSave": true,
+	"js/ts.preferences.importModuleSpecifier": "relative",
+	"js/ts.tsdk.path": "node_modules/typescript/lib",
 	"prettier.documentSelectors": ["**/*.astro"],
 	"tailwindCSS.experimental.classRegex": [
 		["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-	],
-	"js/ts.preferences.importModuleSpecifier": "relative",
-	"js/ts.tsdk.path": "node_modules/typescript/lib"
+	]
 }

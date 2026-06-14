@@ -67,10 +67,10 @@ test('reads document URIs from valid manifest', async () => {
 		await writeFile(
 			manifestPath,
 			JSON.stringify({
-				publicationUri: standardSitePublicationUri,
 				documentsBySlug: {
 					'hello-world': documentUri,
 				},
+				publicationUri: standardSitePublicationUri,
 			}),
 			'utf8',
 		);

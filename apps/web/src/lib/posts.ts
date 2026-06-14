@@ -24,15 +24,15 @@ export async function getSortedEntries() {
 		reader.collections.posts.all().then((posts) =>
 			posts.map((post) => ({
 				...post,
-				type: 'post' as const,
 				pathname: `/posts/${post.slug}`,
+				type: 'post' as const,
 			})),
 		),
 		reader.collections.links.all().then((links) =>
 			links.map((link) => ({
 				...link,
-				type: 'link' as const,
 				pathname: `/links/${link.slug}`,
+				type: 'link' as const,
 			})),
 		),
 	]);
