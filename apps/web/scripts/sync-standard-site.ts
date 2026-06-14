@@ -544,6 +544,7 @@ async function executePlan(
 					collection: COLLECTION,
 					record: item.record,
 					repo,
+					rkey: item.slug,
 					validate: false,
 				}),
 				headers: auth,
