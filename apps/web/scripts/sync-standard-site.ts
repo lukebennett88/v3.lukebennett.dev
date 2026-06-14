@@ -118,8 +118,17 @@ export function getDocumentUri(did: string, slug: string): string {
 
 export function assertExpectedDocumentUri(slug: string, uri: string): void {
 	if (getRkey(uri) !== slug) {
-		throw new Error(`${uri} has unexpected record key for ${slug}`);
+		throw new Error(`Expected document URI for ${slug}, received ${uri}`);
 	}
+}
+
+export function recordSyncedDocumentUri(
+	documentsBySlug: Map<string, string>,
+	slug: string,
+	uri: string,
+): void {
+	assertExpectedDocumentUri(slug, uri);
+	documentsBySlug.set(slug, uri);
 }
 
 export function compareOwnedDocumentFields(
@@ -313,39 +322,51 @@ export async function loadPublishedPosts(): Promise<Array<PublishedPost>> {
 
 	for (const filename of filenames) {
 		const source = await readFile(new URL(filename, POSTS_DIR), 'utf8');
-		const slug = basename(filename, '.mdoc');
-
-		if (!source.startsWith('---\n')) {
-			continue;
-		}
-
-		const frontmatterEnd = source.indexOf('\n---\n', 4);
-		if (frontmatterEnd === -1) {
-			continue;
-		}
-
-		const frontmatter = source.slice(4, frontmatterEnd);
-		const fields = parseSimpleFrontmatter(frontmatter);
-
-		if (fields.isDraft === 'true') {
-			continue;
-		}
-
-		const portableContent = source.slice(frontmatterEnd + '\n---\n'.length);
-
-		if (!fields.publishedAt || !fields.title) {
-			continue;
-		}
-
-		posts.push({
-			portableContent,
-			publishedAt: fields.publishedAt,
-			slug,
-			title: fields.title,
-		});
+		const post = parsePublishedPost(filename, source);
+		if (post) posts.push(post);
 	}
 
 	return posts;
+}
+
+export function parsePublishedPost(
+	filename: string,
+	source: string,
+): PublishedPost | null {
+	const slug = basename(filename, '.mdoc');
+	if (!isValidRecordKey(slug)) {
+		throw new Error(`${filename} has an invalid ATProto record key`);
+	}
+
+	if (!source.startsWith('---\n')) {
+		throw new Error(`${filename} is missing frontmatter`);
+	}
+
+	const frontmatterEnd = source.indexOf('\n---\n', 4);
+	if (frontmatterEnd === -1) {
+		throw new Error(`${filename} is missing frontmatter`);
+	}
+
+	const frontmatter = source.slice(4, frontmatterEnd);
+	const fields = parseSimpleFrontmatter(frontmatter);
+
+	if (fields.isDraft === 'true') {
+		return null;
+	}
+
+	if (!fields.title) {
+		throw new Error(`${filename} is missing title`);
+	}
+	if (!fields.publishedAt) {
+		throw new Error(`${filename} is missing publishedAt`);
+	}
+
+	return {
+		portableContent: source.slice(frontmatterEnd + '\n---\n'.length),
+		publishedAt: fields.publishedAt,
+		slug,
+		title: fields.title,
+	};
 }
 
 function parseSimpleFrontmatter(
@@ -551,7 +572,7 @@ async function executePlan(
 				method: 'POST',
 			},
 		);
-		documentsBySlug.set(item.slug, result.uri);
+		recordSyncedDocumentUri(documentsBySlug, item.slug, result.uri);
 	}
 
 	for (const item of plan.updates) {
@@ -571,7 +592,7 @@ async function executePlan(
 				method: 'POST',
 			},
 		);
-		documentsBySlug.set(item.slug, result.uri);
+		recordSyncedDocumentUri(documentsBySlug, item.slug, result.uri);
 	}
 
 	for (const item of plan.deletes) {
