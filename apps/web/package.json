@@ -5,6 +5,7 @@
 	"scripts": {
 		"astro": "astro",
 		"build": "astro build",
+		"build:production": "pnpm run check && pnpm run standard-site:sync -- --write && pnpm run build",
 		"check": "pnpm exec prettier 'src/**/*.astro' --cache --check && pnpm biome check && pnpm run check:types",
 		"check:format": "pnpm exec prettier 'src/**/*.astro' --cache --check && pnpm biome format",
 		"check:lint": "pnpm biome lint",
@@ -15,7 +16,9 @@
 		"fix": "pnpm biome check --write",
 		"fix:format": "pnpm exec prettier 'src/**/*.astro' --cache --write && pnpm biome format --write",
 		"fix:lint": "pnpm biome lint --write",
-		"lint": "pnpm biome lint --write"
+		"lint": "pnpm biome lint --write",
+		"standard-site:sync": "node --experimental-strip-types scripts/sync-standard-site.ts",
+		"test:standard-site": "node --experimental-strip-types --test src/lib/standard-site.test.ts scripts/sync-standard-site.test.ts"
 	},
 	"dependencies": {
 		"@astrojs/compiler-rs": "^0.1.2",
@@ -36,7 +39,8 @@
 		"shiki": "^4.0.2",
 		"tailwind-merge": "^3.5.0",
 		"tailwindcss": "^4.2.4",
-		"tiny-invariant": "^1.3.3"
+		"tiny-invariant": "^1.3.3",
+		"zod": "^4.4.3"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.9",
