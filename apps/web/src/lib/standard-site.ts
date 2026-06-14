@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import * as z from 'zod';
 
 export const standardSitePublicationUri =
@@ -19,9 +19,7 @@ type ManifestOptions = {
 	requireManifest?: boolean;
 };
 
-const defaultManifestPath = fileURLToPath(
-	new URL('../generated/standard-site.json', import.meta.url),
-);
+const defaultManifestPath = resolve('src/generated/standard-site.json');
 
 export function loadStandardSiteManifest({
 	manifestPath = defaultManifestPath,
