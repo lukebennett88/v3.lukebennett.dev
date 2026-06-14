@@ -1,6 +1,7 @@
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import * as z from 'zod';
 
 type PublishedPost = {
 	portableContent: string;
@@ -26,31 +27,43 @@ type DocumentRecord = {
 	title: string;
 };
 
-type DidDocument = {
-	service?: Array<{
-		serviceEndpoint?: string;
-		type?: string;
-	}>;
-};
+const SessionSchema = z.object({
+	accessJwt: z.string(),
+	did: z.string(),
+});
 
-type Session = {
-	accessJwt: string;
-	did: string;
-};
+type Session = z.infer<typeof SessionSchema>;
 
-type ExistingRecord = {
-	uri: `at://${string}`;
-	value: Record<string, unknown>;
-};
+const ExistingRecordSchema = z.object({
+	uri: z.string().startsWith('at://'),
+	value: z.record(z.string(), z.unknown()),
+});
 
-type ListRecordsResponse = {
-	cursor?: string;
-	records: Array<ExistingRecord>;
-};
+type ExistingRecord = z.infer<typeof ExistingRecordSchema>;
 
-type WriteRecordResponse = {
-	uri: `at://${string}`;
-};
+const ListRecordsResponseSchema = z.object({
+	cursor: z.string().optional(),
+	records: z.array(ExistingRecordSchema),
+});
+
+const WriteRecordResponseSchema = z.object({
+	uri: z.string().startsWith('at://'),
+});
+
+const DidDocumentSchema = z.object({
+	service: z
+		.array(
+			z.object({
+				serviceEndpoint: z.string().optional(),
+				type: z.string().optional(),
+			}),
+		)
+		.optional(),
+});
+
+const DidResponseSchema = z.object({
+	did: z.string().optional(),
+});
 
 const APP_DIR = new URL('..', import.meta.url);
 const POSTS_DIR = new URL('content/posts/', APP_DIR);
@@ -95,10 +108,7 @@ const OWNED_DOCUMENT_FIELDS = [
 	'title',
 ] as const;
 
-export function getDocumentUri(
-	did: string,
-	slug: string,
-): `at://${string}/site.standard.document/${string}` {
+export function getDocumentUri(did: string, slug: string): string {
 	if (!isValidRecordKey(slug)) {
 		throw new Error(`${slug} is not a valid AT Protocol record key`);
 	}
@@ -136,15 +146,15 @@ type ReconciliationPlan = {
 	creates: Array<{
 		record: DocumentRecord;
 		slug: string;
-		uri: `at://${string}`;
+		uri: string;
 	}>;
 	deletes: Array<{ record: ExistingRecord; slug: string }>;
-	noops: Array<{ record: ExistingRecord; slug: string; uri: `at://${string}` }>;
+	noops: Array<{ record: ExistingRecord; slug: string; uri: string }>;
 	updates: Array<{
 		record: DocumentRecord;
 		remote: ExistingRecord;
 		slug: string;
-		uri: `at://${string}`;
+		uri: string;
 	}>;
 };
 
@@ -245,7 +255,7 @@ async function removeManifest(): Promise<void> {
 }
 
 async function writeManifest(
-	documentsBySlug: Map<string, `at://${string}`>,
+	documentsBySlug: Map<string, string>,
 ): Promise<void> {
 	await mkdir(GENERATED_DIR, { recursive: true });
 	await writeFile(
@@ -264,16 +274,25 @@ async function writeManifest(
 	);
 }
 
+const FENCE_PATTERN = /```[\s\S]*?```/g;
+const IMAGE_PATTERN = /!\[([^\]]*)\]\([^)]+\)/g;
+const LINK_PATTERN = /\[([^\]]+)\]\([^)]+\)/g;
+const INLINE_CODE_PATTERN = /`([^`]+)`/g;
+const FORMATTING_CHARS_PATTERN = /[*_~>#]/g;
+const TAG_PATTERN = /\{[%#][\s\S]*?[%#]\}/g;
+const HARD_BREAK_PATTERN = /\\\n/g;
+const EXCESS_NEWLINES_PATTERN = /\n{3,}/g;
+
 export function toPlainText(markdoc: string): string {
 	return markdoc
-		.replaceAll(/```[\s\S]*?```/g, '')
-		.replaceAll(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
-		.replaceAll(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-		.replaceAll(/`([^`]+)`/g, '$1')
-		.replaceAll(/[*_~>#]/g, '')
-		.replaceAll(/\{[%#][\s\S]*?[%#]\}/g, '')
-		.replaceAll(/\\\n/g, '\n')
-		.replaceAll(/\n{3,}/g, '\n\n')
+		.replaceAll(FENCE_PATTERN, '')
+		.replaceAll(IMAGE_PATTERN, '$1')
+		.replaceAll(LINK_PATTERN, '$1')
+		.replaceAll(INLINE_CODE_PATTERN, '$1')
+		.replaceAll(FORMATTING_CHARS_PATTERN, '')
+		.replaceAll(TAG_PATTERN, '')
+		.replaceAll(HARD_BREAK_PATTERN, '\n')
+		.replaceAll(EXCESS_NEWLINES_PATTERN, '\n\n')
 		.trim();
 }
 
@@ -351,6 +370,7 @@ function parseSimpleFrontmatter(
 async function xrpc<ResponseBody>(
 	pds: string,
 	path: string,
+	schema: z.ZodType<ResponseBody>,
 	init: RequestInit = {},
 ): Promise<ResponseBody> {
 	const response = await fetch(`${pds}/xrpc/${path}`, {
@@ -361,13 +381,31 @@ async function xrpc<ResponseBody>(
 		},
 	});
 	const text = await response.text();
-	const body = text ? JSON.parse(text) : undefined;
 
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}: ${text}`);
 	}
 
-	return body as ResponseBody;
+	return schema.parse(JSON.parse(text));
+}
+
+async function xrpcVoid(
+	pds: string,
+	path: string,
+	init: RequestInit = {},
+): Promise<void> {
+	const response = await fetch(`${pds}/xrpc/${path}`, {
+		...init,
+		headers: {
+			'Content-Type': 'application/json',
+			...init.headers,
+		},
+	});
+
+	if (!response.ok) {
+		const text = await response.text();
+		throw new Error(`${response.status} ${response.statusText}: ${text}`);
+	}
 }
 
 async function resolveDid(identifier: string): Promise<string> {
@@ -378,7 +416,7 @@ async function resolveDid(identifier: string): Promise<string> {
 	const response = await fetch(
 		`https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle=${encodeURIComponent(identifier)}`,
 	);
-	const body = (await response.json()) as { did?: string };
+	const body = DidResponseSchema.parse(await response.json());
 
 	if (!response.ok) {
 		throw new Error(`Could not resolve ${identifier}: ${JSON.stringify(body)}`);
@@ -393,7 +431,7 @@ async function resolveDid(identifier: string): Promise<string> {
 
 async function resolvePds(did: string): Promise<string> {
 	const response = await fetch(`https://plc.directory/${did}`);
-	const body = (await response.json()) as DidDocument;
+	const body = DidDocumentSchema.parse(await response.json());
 
 	if (!response.ok) {
 		throw new Error(`Could not resolve DID document for ${did}`);
@@ -414,7 +452,7 @@ async function createSession(
 	identifier: string,
 	password: string,
 ): Promise<Session> {
-	return xrpc<Session>(pds, 'com.atproto.server.createSession', {
+	return xrpc(pds, 'com.atproto.server.createSession', SessionSchema, {
 		body: JSON.stringify({ identifier, password }),
 		method: 'POST',
 	});
@@ -429,7 +467,7 @@ async function listRecords(
 	const records: Array<ExistingRecord> = [];
 	let cursor: string | undefined;
 
-	do {
+	while (true) {
 		const query = new URLSearchParams({
 			collection,
 			limit: '100',
@@ -439,16 +477,18 @@ async function listRecords(
 			query.set('cursor', cursor);
 		}
 
-		const body = await xrpc<ListRecordsResponse>(
+		const body = await xrpc(
 			pds,
 			`com.atproto.repo.listRecords?${query}`,
+			ListRecordsResponseSchema,
 			{
 				headers: auth,
 			},
 		);
 		records.push(...body.records);
+		if (!body.cursor) break;
 		cursor = body.cursor;
-	} while (cursor);
+	}
 
 	return records;
 }
@@ -491,13 +531,14 @@ async function executePlan(
 	auth: Record<string, string>,
 	repo: string,
 	plan: ReconciliationPlan,
-): Promise<Map<string, `at://${string}`>> {
-	const documentsBySlug = new Map<string, `at://${string}`>();
+): Promise<Map<string, string>> {
+	const documentsBySlug = new Map<string, string>();
 
 	for (const item of plan.creates) {
-		const result = await xrpc<WriteRecordResponse>(
+		const result = await xrpc(
 			pds,
 			'com.atproto.repo.createRecord',
+			WriteRecordResponseSchema,
 			{
 				body: JSON.stringify({
 					collection: COLLECTION,
@@ -513,9 +554,10 @@ async function executePlan(
 	}
 
 	for (const item of plan.updates) {
-		const result = await xrpc<WriteRecordResponse>(
+		const result = await xrpc(
 			pds,
 			'com.atproto.repo.putRecord',
+			WriteRecordResponseSchema,
 			{
 				body: JSON.stringify({
 					collection: COLLECTION,
@@ -532,7 +574,7 @@ async function executePlan(
 	}
 
 	for (const item of plan.deletes) {
-		await xrpc(pds, 'com.atproto.repo.deleteRecord', {
+		await xrpcVoid(pds, 'com.atproto.repo.deleteRecord', {
 			body: JSON.stringify({
 				collection: COLLECTION,
 				repo,
@@ -561,7 +603,7 @@ async function main(): Promise<void> {
 	if (!args.has('--report') && !args.has('--write')) {
 		const posts = await loadPublishedPosts();
 		for (const post of posts) {
-			console.log(`${post.slug} -> /posts/${post.slug}`);
+			console.log(`${post.slug} /posts/${post.slug}`);
 		}
 		console.log(`published posts: ${posts.length}`);
 		return;

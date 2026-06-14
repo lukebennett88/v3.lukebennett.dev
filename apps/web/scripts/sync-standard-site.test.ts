@@ -9,7 +9,7 @@ import {
 	mergeOwnedDocumentFields,
 	planReconciliation,
 	toPlainText,
-} from './sync-standard-site';
+} from './sync-standard-site.ts';
 
 test('extractPortableContent returns body after frontmatter', () => {
 	assert.equal(

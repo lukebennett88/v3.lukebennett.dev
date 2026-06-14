@@ -8,7 +8,7 @@ import {
 	getStandardSiteDocumentUri,
 	loadStandardSiteManifest,
 	standardSitePublicationUri,
-} from './standard-site';
+} from './standard-site.ts';
 
 test('keeps committed publication URI available', () => {
 	assert.equal(
