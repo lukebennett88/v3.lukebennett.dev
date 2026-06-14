@@ -4,3 +4,33 @@
 
 [context.production.build]
   command = "pnpm --filter @lukebennett/web build:production"
+
+[[redirects]]
+  from = "https://lukebennett.com.au/*"
+  to = "https://www.lukebennett.dev/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.lukebennett.com.au/*"
+  to = "https://www.lukebennett.dev/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://lukebennett.dev/*"
+  to = "https://www.lukebennett.dev/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.lukebennett.com.au/.well-known/*"
+  to = "/.well-known/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://lukebennett.com.au/.well-known/*"
+  to = "/.well-known/:splat"
+  status = 200
+  force = true
