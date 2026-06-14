@@ -7,7 +7,9 @@ import {
 	getDocumentUri,
 	isValidRecordKey,
 	mergeOwnedDocumentFields,
+	parsePublishedPost,
 	planReconciliation,
+	recordSyncedDocumentUri,
 	toPlainText,
 } from './sync-standard-site.ts';
 
@@ -31,6 +33,39 @@ test('extractPortableContent rejects missing frontmatter boundary', () => {
 	assert.throws(
 		() => extractPortableContent('broken.mdoc', 'Hello world'),
 		/broken.mdoc is missing frontmatter/,
+	);
+});
+
+test('parsePublishedPost rejects missing published metadata', () => {
+	assert.throws(
+		() =>
+			parsePublishedPost(
+				'untitled.mdoc',
+				`---
+publishedAt: 2024-01-20
+isDraft: false
+---
+Hello.
+`,
+			),
+		/untitled.mdoc is missing title/,
+	);
+});
+
+test('parsePublishedPost rejects invalid record keys', () => {
+	assert.throws(
+		() =>
+			parsePublishedPost(
+				'.mdoc',
+				`---
+title: Hello
+publishedAt: 2024-01-20
+isDraft: false
+---
+Hello.
+`,
+			),
+		/.mdoc has an invalid ATProto record key/,
 	);
 });
 
@@ -167,6 +202,30 @@ test('planReconciliation fails on unexpected existing record key', () => {
 				],
 			}),
 		/manual cleanup/,
+	);
+});
+
+test('recordSyncedDocumentUri records only matching document AT-URIs', () => {
+	const documentsBySlug = new Map<string, string>();
+
+	recordSyncedDocumentUri(
+		documentsBySlug,
+		'hello-world',
+		'at://did:plc:example/site.standard.document/hello-world',
+	);
+
+	assert.equal(
+		documentsBySlug.get('hello-world'),
+		'at://did:plc:example/site.standard.document/hello-world',
+	);
+	assert.throws(
+		() =>
+			recordSyncedDocumentUri(
+				documentsBySlug,
+				'hello-world',
+				'at://did:plc:example/site.standard.document/generated-key',
+			),
+		/Expected document URI/,
 	);
 });
 
