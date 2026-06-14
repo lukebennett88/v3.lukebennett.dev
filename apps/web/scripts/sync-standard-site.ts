@@ -609,10 +609,9 @@ async function main(): Promise<void> {
 		return;
 	}
 
-	const password =
-		process.env.STANDARD_SITE_APP_PASSWORD ?? process.env.BSKY_APP_PASSWORD;
+	const password = process.env.STANDARD_SITE_APP_PASSWORD;
 	if (!password) {
-		throw new Error('Set STANDARD_SITE_APP_PASSWORD or BSKY_APP_PASSWORD');
+		throw new Error('Set STANDARD_SITE_APP_PASSWORD');
 	}
 
 	const identifier = process.env.ATPROTO_IDENTIFIER ?? DEFAULT_IDENTIFIER;
