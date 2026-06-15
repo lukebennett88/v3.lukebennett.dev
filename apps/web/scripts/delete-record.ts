@@ -1,36 +1,6 @@
+import { connectAtprotoRepo, getRkey } from './atproto.ts';
+
 const DEFAULT_IDENTIFIER = 'lukebennett.dev';
-
-function getRkey(uri: string): string {
-	const index = uri.lastIndexOf('/');
-	return uri.slice(index + 1);
-}
-
-async function resolveDid(identifier: string): Promise<string> {
-	if (identifier.startsWith('did:')) return identifier;
-
-	const response = await fetch(
-		`https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle=${encodeURIComponent(identifier)}`,
-	);
-	const body = (await response.json()) as { did: string };
-	if (!response.ok || !body.did) {
-		throw new Error(`Could not resolve ${identifier}`);
-	}
-	return body.did;
-}
-
-async function resolvePds(did: string): Promise<string> {
-	const response = await fetch(`https://plc.directory/${did}`);
-	const body = (await response.json()) as {
-		service?: Array<{ type: string; serviceEndpoint: string }>;
-	};
-	const service = body.service?.find(
-		(item) => item.type === 'AtprotoPersonalDataServer',
-	);
-	if (!service?.serviceEndpoint) {
-		throw new Error(`${did} has no PDS`);
-	}
-	return service.serviceEndpoint;
-}
 
 async function main() {
 	const raw = process.argv[2];
@@ -50,44 +20,8 @@ async function main() {
 		process.exit(1);
 	}
 
-	const did = await resolveDid(identifier);
-	const pds = await resolvePds(did);
-	console.error(`Resolved ${identifier} → ${did}, PDS: ${pds}`);
-
-	const sessionRes = await fetch(
-		`${pds}/xrpc/com.atproto.server.createSession`,
-		{
-			body: JSON.stringify({ identifier, password }),
-			headers: { 'Content-Type': 'application/json' },
-			method: 'POST',
-		},
-	);
-	if (!sessionRes.ok) {
-		console.error(
-			`Auth failed: ${sessionRes.status} ${await sessionRes.text()}`,
-		);
-		process.exit(1);
-	}
-	const session = (await sessionRes.json()) as { accessJwt: string };
-
-	const deleteRes = await fetch(`${pds}/xrpc/com.atproto.repo.deleteRecord`, {
-		body: JSON.stringify({
-			collection: 'site.standard.document',
-			repo: did,
-			rkey,
-		}),
-		headers: {
-			Authorization: `Bearer ${session.accessJwt}`,
-			'Content-Type': 'application/json',
-		},
-		method: 'POST',
-	});
-	if (!deleteRes.ok) {
-		console.error(
-			`Delete failed: ${deleteRes.status} ${await deleteRes.text()}`,
-		);
-		process.exit(1);
-	}
+	const repo = await connectAtprotoRepo({ identifier, password });
+	await repo.deleteRecord({ collection: 'site.standard.document', rkey });
 
 	console.log(`Deleted site.standard.document/${rkey}`);
 }
