@@ -7,6 +7,7 @@ import test from 'node:test';
 import {
 	getStandardSiteDocumentUri,
 	loadStandardSiteManifest,
+	serializeStandardSiteManifest,
 	standardSitePublicationUri,
 } from './standard-site.ts';
 
@@ -91,4 +92,58 @@ test('reads document URIs from valid manifest', async () => {
 	} finally {
 		await rm(dir, { force: true, recursive: true });
 	}
+});
+
+test('serializeStandardSiteManifest round-trips through loadStandardSiteManifest', async () => {
+	const dir = await mkdtemp(join(tmpdir(), 'standard-site-'));
+	const manifestPath = join(dir, 'standard-site.json');
+	const documentsBySlug = new Map([
+		[
+			'hello-world',
+			'at://did:plc:3z5ja7l2rhnmtr2bni5dyfe7/site.standard.document/hello-world',
+		],
+		[
+			'another-post',
+			'at://did:plc:3z5ja7l2rhnmtr2bni5dyfe7/site.standard.document/another-post',
+		],
+	]);
+
+	try {
+		await writeFile(
+			manifestPath,
+			serializeStandardSiteManifest(documentsBySlug),
+			'utf8',
+		);
+
+		const manifest = loadStandardSiteManifest({
+			manifestPath,
+			requireManifest: false,
+		});
+
+		assert.deepEqual(
+			manifest.documentsBySlug,
+			Object.fromEntries(documentsBySlug),
+		);
+		assert.equal(manifest.publicationUri, standardSitePublicationUri);
+	} finally {
+		await rm(dir, { force: true, recursive: true });
+	}
+});
+
+test('serializeStandardSiteManifest sorts slugs and ends with a trailing newline', () => {
+	const serialized = serializeStandardSiteManifest(
+		new Map([
+			[
+				'zebra',
+				'at://did:plc:3z5ja7l2rhnmtr2bni5dyfe7/site.standard.document/zebra',
+			],
+			[
+				'apple',
+				'at://did:plc:3z5ja7l2rhnmtr2bni5dyfe7/site.standard.document/apple',
+			],
+		]),
+	);
+
+	assert.ok(serialized.endsWith('\n'));
+	assert.ok(serialized.indexOf('"apple"') < serialized.indexOf('"zebra"'));
 });

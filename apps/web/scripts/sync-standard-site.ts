@@ -8,6 +8,11 @@ import {
 	getRkey,
 } from './atproto.ts';
 
+import {
+	serializeStandardSiteManifest,
+	standardSitePublicationUri,
+} from '../src/lib/standard-site.ts';
+
 type PublishedPost = {
 	portableContent: string;
 	publishedAt: string;
@@ -27,7 +32,7 @@ type DocumentRecord = {
 	description: string;
 	path: `/posts/${string}`;
 	publishedAt: string;
-	site: typeof PUBLICATION_URI;
+	site: typeof standardSitePublicationUri;
 	textContent: string;
 	title: string;
 };
@@ -37,8 +42,6 @@ const POSTS_DIR = new URL('content/posts/', APP_DIR);
 const GENERATED_DIR = new URL('src/generated/', APP_DIR);
 const MANIFEST_URL = new URL('src/generated/standard-site.json', APP_DIR);
 const COLLECTION = 'site.standard.document';
-const PUBLICATION_URI =
-	'at://did:plc:3z5ja7l2rhnmtr2bni5dyfe7/site.standard.publication/3mnqwgvxn372f';
 const DEFAULT_IDENTIFIER = 'lukebennett.dev';
 
 export function extractPortableContent(
@@ -151,7 +154,7 @@ export function planReconciliation({
 	for (const record of existingRecords) {
 		const value = record.value ?? {};
 		if (
-			value.site !== PUBLICATION_URI ||
+			value.site !== standardSitePublicationUri ||
 			typeof value.path !== 'string' ||
 			!value.path.startsWith('/posts/')
 		) {
@@ -220,7 +223,7 @@ export function buildDocumentRecord(post: PublishedPost): DocumentRecord {
 		description: truncateDescription(textContent),
 		path: `/posts/${post.slug}`,
 		publishedAt: new Date(`${post.publishedAt}T00:00:00.000Z`).toISOString(),
-		site: PUBLICATION_URI,
+		site: standardSitePublicationUri,
 		textContent,
 		title: post.title,
 	};
@@ -236,16 +239,7 @@ async function writeManifest(
 	await mkdir(GENERATED_DIR, { recursive: true });
 	await writeFile(
 		MANIFEST_URL,
-		`${JSON.stringify(
-			{
-				documentsBySlug: Object.fromEntries(
-					[...documentsBySlug.entries()].sort(([a], [b]) => a.localeCompare(b)),
-				),
-				publicationUri: PUBLICATION_URI,
-			},
-			null,
-			2,
-		)}\n`,
+		serializeStandardSiteManifest(documentsBySlug),
 		'utf8',
 	);
 }
