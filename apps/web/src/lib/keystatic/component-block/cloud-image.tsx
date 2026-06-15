@@ -1,31 +1,33 @@
-/** @jsxRuntime classic */
 import { component, fields } from '@keystatic/core';
-// biome-ignore lint/correctness/noUnusedImports: React is used by the classic JSX runtime.
-import * as React from 'react';
+
+import { CloudImage } from '../renderers/cloud-image';
 
 export const cloudImage = component({
 	label: 'Cloud Image',
 	preview({ fields }) {
 		const src = fields.src.value;
 
+		// `CloudImage` calls `new URL(src)` and throws on any not-yet-valid URL
+		// (empty, whitespace-only, or missing protocol), so guard while the
+		// author is still typing.
+		if (!URL.canParse(src)) {
+			return (
+				<figure style={{ margin: 0 }}>
+					<span style={{ color: '#6b7280', fontSize: 12 }}>
+						No image URL yet
+					</span>
+				</figure>
+			);
+		}
+
 		return (
-			<figure style={{ margin: 0 }}>
-				<img
-					alt={fields.alt.value}
-					src={src}
-					style={{
-						display: 'block',
-						maxHeight: 368,
-						maxWidth: '100%',
-						objectFit: 'contain',
-					}}
-				/>
-				{fields.priority.value ? (
-					<figcaption style={{ fontSize: 12, marginTop: 8 }}>
-						Priority image
-					</figcaption>
-				) : null}
-			</figure>
+			<CloudImage
+				alt={fields.alt.value}
+				height={fields.height.value}
+				priority={fields.priority.value}
+				src={src}
+				width={fields.width.value}
+			/>
 		);
 	},
 	schema: {
