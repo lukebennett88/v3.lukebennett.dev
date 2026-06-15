@@ -2,13 +2,19 @@ import {
 	type DocumentRendererProps,
 	DocumentRenderer as KeystaticDocumentRenderer,
 } from '@keystatic/core/renderer';
-import { highlighter } from '../highlighter';
-import { componentBlockRenderers, getDocumentRenderers } from './renderers';
+import type { Highlighter } from 'shiki';
 
-export function DocumentRenderer(props: DocumentRendererProps) {
+import { highlighter as defaultHighlighter } from '../highlighter';
+import { createKeystaticRenderers } from './renderers';
+
+export function DocumentRenderer({
+	highlighter = defaultHighlighter,
+	...props
+}: DocumentRendererProps & { highlighter?: Highlighter }) {
+	const registry = createKeystaticRenderers(highlighter);
 	const {
-		componentBlocks = componentBlockRenderers,
-		renderers = getDocumentRenderers(highlighter),
+		componentBlocks = registry.componentBlocks,
+		renderers = registry.renderers,
 		...consumerProps
 	} = props;
 

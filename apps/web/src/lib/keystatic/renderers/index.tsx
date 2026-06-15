@@ -10,38 +10,37 @@ import { InlineCode } from './inline-code';
 import { Link } from './link';
 
 /**
- * Returns Keystatic document renderers for Code, Headings etc.
+ * Single registry for all Keystatic renderers. Returns both the
+ * component-block renderers and the document block/inline renderers, with the
+ * Shiki highlighter injected as a dependency.
  */
-export function getDocumentRenderers(
-	highlighter: Highlighter,
-): DocumentRendererProps['renderers'] {
+export function createKeystaticRenderers(highlighter: Highlighter): {
+	componentBlocks: InferRenderersForComponentBlocks<typeof componentBlocks>;
+	renderers: DocumentRendererProps['renderers'];
+} {
 	return {
-		block: {
-			code(props) {
-				return <Code {...props} highlighter={highlighter} />;
-			},
-			heading(props) {
-				return <Heading {...props} />;
+		componentBlocks: {
+			cloudImage(props) {
+				return <CloudImage {...props} />;
 			},
 		},
-		inline: {
-			code(props) {
-				return <InlineCode {...props} />;
+		renderers: {
+			block: {
+				code(props) {
+					return <Code {...props} highlighter={highlighter} />;
+				},
+				heading(props) {
+					return <Heading {...props} />;
+				},
 			},
-			link(props) {
-				return <Link {...props} />;
+			inline: {
+				code(props) {
+					return <InlineCode {...props} />;
+				},
+				link(props) {
+					return <Link {...props} />;
+				},
 			},
 		},
 	};
 }
-
-/**
- * Returns renderers for Keystatic component blocks.
- */
-export const componentBlockRenderers: InferRenderersForComponentBlocks<
-	typeof componentBlocks
-> = {
-	cloudImage(props) {
-		return <CloudImage {...props} />;
-	},
-};
