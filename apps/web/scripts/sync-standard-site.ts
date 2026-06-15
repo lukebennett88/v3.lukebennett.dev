@@ -1,7 +1,12 @@
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import * as z from 'zod';
+import {
+	type AtprotoRepo,
+	connectAtprotoRepo,
+	type ExistingRecord,
+	getRkey,
+} from './atproto.ts';
 
 type PublishedPost = {
 	portableContent: string;
@@ -26,44 +31,6 @@ type DocumentRecord = {
 	textContent: string;
 	title: string;
 };
-
-const SessionSchema = z.object({
-	accessJwt: z.string(),
-	did: z.string(),
-});
-
-type Session = z.infer<typeof SessionSchema>;
-
-const ExistingRecordSchema = z.object({
-	uri: z.string().startsWith('at://'),
-	value: z.record(z.string(), z.unknown()),
-});
-
-type ExistingRecord = z.infer<typeof ExistingRecordSchema>;
-
-const ListRecordsResponseSchema = z.object({
-	cursor: z.string().optional(),
-	records: z.array(ExistingRecordSchema),
-});
-
-const WriteRecordResponseSchema = z.object({
-	uri: z.string().startsWith('at://'),
-});
-
-const DidDocumentSchema = z.object({
-	service: z
-		.array(
-			z.object({
-				serviceEndpoint: z.string().optional(),
-				type: z.string().optional(),
-			}),
-		)
-		.optional(),
-});
-
-const DidResponseSchema = z.object({
-	did: z.string().optional(),
-});
 
 const APP_DIR = new URL('..', import.meta.url);
 const POSTS_DIR = new URL('content/posts/', APP_DIR);
@@ -388,147 +355,6 @@ function parseSimpleFrontmatter(
 	return fields;
 }
 
-async function xrpc<ResponseBody>(
-	pds: string,
-	path: string,
-	schema: z.ZodType<ResponseBody>,
-	init: RequestInit = {},
-): Promise<ResponseBody> {
-	const response = await fetch(`${pds}/xrpc/${path}`, {
-		...init,
-		headers: {
-			'Content-Type': 'application/json',
-			...init.headers,
-		},
-	});
-	const text = await response.text();
-
-	if (!response.ok) {
-		throw new Error(`${response.status} ${response.statusText}: ${text}`);
-	}
-
-	return schema.parse(JSON.parse(text));
-}
-
-async function xrpcVoid(
-	pds: string,
-	path: string,
-	init: RequestInit = {},
-): Promise<void> {
-	const response = await fetch(`${pds}/xrpc/${path}`, {
-		...init,
-		headers: {
-			'Content-Type': 'application/json',
-			...init.headers,
-		},
-	});
-
-	if (!response.ok) {
-		const text = await response.text();
-		throw new Error(`${response.status} ${response.statusText}: ${text}`);
-	}
-}
-
-async function resolveDid(identifier: string): Promise<string> {
-	if (identifier.startsWith('did:')) {
-		return identifier;
-	}
-
-	const response = await fetch(
-		`https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle=${encodeURIComponent(identifier)}`,
-	);
-	const body = DidResponseSchema.parse(await response.json());
-
-	if (!response.ok) {
-		throw new Error(`Could not resolve ${identifier}: ${JSON.stringify(body)}`);
-	}
-
-	if (!body.did) {
-		throw new Error(`Could not resolve ${identifier}`);
-	}
-
-	return body.did;
-}
-
-async function resolvePds(did: string): Promise<string> {
-	const response = await fetch(`https://plc.directory/${did}`);
-	const body = DidDocumentSchema.parse(await response.json());
-
-	if (!response.ok) {
-		throw new Error(`Could not resolve DID document for ${did}`);
-	}
-
-	const service = body.service?.find(
-		(item) => item.type === 'AtprotoPersonalDataServer',
-	);
-	if (!service?.serviceEndpoint) {
-		throw new Error(`${did} has no AT Protocol PDS service`);
-	}
-
-	return service.serviceEndpoint.replace(/\/$/, '');
-}
-
-async function createSession(
-	pds: string,
-	identifier: string,
-	password: string,
-): Promise<Session> {
-	return xrpc(pds, 'com.atproto.server.createSession', SessionSchema, {
-		body: JSON.stringify({ identifier, password }),
-		method: 'POST',
-	});
-}
-
-async function listRecords(
-	pds: string,
-	auth: Record<string, string>,
-	repo: string,
-	collection: string,
-): Promise<Array<ExistingRecord>> {
-	const records: Array<ExistingRecord> = [];
-	let cursor: string | undefined;
-
-	while (true) {
-		const query = new URLSearchParams({
-			collection,
-			limit: '100',
-			repo,
-		});
-		if (cursor) {
-			query.set('cursor', cursor);
-		}
-
-		const body = await xrpc(
-			pds,
-			`com.atproto.repo.listRecords?${query}`,
-			ListRecordsResponseSchema,
-			{
-				headers: auth,
-			},
-		);
-		records.push(...body.records);
-		if (!body.cursor) break;
-		cursor = body.cursor;
-	}
-
-	return records;
-}
-
-function getRkey(uri: string): string {
-	const index = uri.lastIndexOf('/');
-	return uri.slice(index + 1);
-}
-
-async function authenticate(
-	identifier: string,
-	password: string,
-): Promise<{ auth: Record<string, string>; did: string; pds: string }> {
-	const did = await resolveDid(identifier);
-	const pds = await resolvePds(did);
-	const session = await createSession(pds, identifier, password);
-	return { auth: { Authorization: `Bearer ${session.accessJwt}` }, did, pds };
-}
-
 function printPlan(plan: ReconciliationPlan): void {
 	for (const item of plan.creates) {
 		console.log(`create ${item.slug}`);
@@ -547,63 +373,34 @@ function printPlan(plan: ReconciliationPlan): void {
 	);
 }
 
-async function executePlan(
-	pds: string,
-	auth: Record<string, string>,
-	repo: string,
+export async function executePlan(
+	repo: AtprotoRepo,
 	plan: ReconciliationPlan,
 ): Promise<Map<string, string>> {
 	const documentsBySlug = new Map<string, string>();
 
 	for (const item of plan.creates) {
-		const result = await xrpc(
-			pds,
-			'com.atproto.repo.createRecord',
-			WriteRecordResponseSchema,
-			{
-				body: JSON.stringify({
-					collection: COLLECTION,
-					record: item.record,
-					repo,
-					rkey: item.slug,
-					validate: false,
-				}),
-				headers: auth,
-				method: 'POST',
-			},
-		);
+		const result = await repo.createRecord({
+			collection: COLLECTION,
+			record: item.record,
+			rkey: item.slug,
+		});
 		recordSyncedDocumentUri(documentsBySlug, item.slug, result.uri);
 	}
 
 	for (const item of plan.updates) {
-		const result = await xrpc(
-			pds,
-			'com.atproto.repo.putRecord',
-			WriteRecordResponseSchema,
-			{
-				body: JSON.stringify({
-					collection: COLLECTION,
-					record: mergeOwnedDocumentFields(item.remote.value, item.record),
-					repo,
-					rkey: getRkey(item.remote.uri),
-					validate: false,
-				}),
-				headers: auth,
-				method: 'POST',
-			},
-		);
+		const result = await repo.putRecord({
+			collection: COLLECTION,
+			record: mergeOwnedDocumentFields(item.remote.value, item.record),
+			rkey: getRkey(item.remote.uri),
+		});
 		recordSyncedDocumentUri(documentsBySlug, item.slug, result.uri);
 	}
 
 	for (const item of plan.deletes) {
-		await xrpcVoid(pds, 'com.atproto.repo.deleteRecord', {
-			body: JSON.stringify({
-				collection: COLLECTION,
-				repo,
-				rkey: getRkey(item.record.uri),
-			}),
-			headers: auth,
-			method: 'POST',
+		await repo.deleteRecord({
+			collection: COLLECTION,
+			rkey: getRkey(item.record.uri),
 		});
 	}
 
@@ -637,10 +434,10 @@ async function main(): Promise<void> {
 	}
 
 	const identifier = process.env.ATPROTO_IDENTIFIER ?? DEFAULT_IDENTIFIER;
-	const { auth, did, pds } = await authenticate(identifier, password);
+	const repo = await connectAtprotoRepo({ identifier, password });
 	const posts = await loadPublishedPosts();
-	const existingRecords = await listRecords(pds, auth, did, COLLECTION);
-	const plan = planReconciliation({ did, existingRecords, posts });
+	const existingRecords = await repo.listRecords(COLLECTION);
+	const plan = planReconciliation({ did: repo.did, existingRecords, posts });
 
 	if (args.has('--report')) {
 		printPlan(plan);
@@ -649,7 +446,7 @@ async function main(): Promise<void> {
 
 	if (args.has('--write')) {
 		await removeManifest();
-		const documentsBySlug = await executePlan(pds, auth, did, plan);
+		const documentsBySlug = await executePlan(repo, plan);
 		await writeManifest(documentsBySlug);
 		printPlan(plan);
 	}
