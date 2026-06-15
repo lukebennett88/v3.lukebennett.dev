@@ -5,14 +5,26 @@ import * as z from 'zod';
 export const standardSitePublicationUri =
 	'at://did:plc:3z5ja7l2rhnmtr2bni5dyfe7/site.standard.publication/3mnqwgvxn372f';
 
-const StandardSiteManifestSchema = z
+export const StandardSiteManifestSchema = z
 	.object({
 		documentsBySlug: z.record(z.string(), z.string().startsWith('at://')),
 		publicationUri: z.literal(standardSitePublicationUri),
 	})
 	.readonly();
 
-type StandardSiteManifest = z.infer<typeof StandardSiteManifestSchema>;
+export type StandardSiteManifest = z.infer<typeof StandardSiteManifestSchema>;
+
+export function serializeStandardSiteManifest(
+	documentsBySlug: Map<string, string>,
+): string {
+	const manifest = StandardSiteManifestSchema.parse({
+		documentsBySlug: Object.fromEntries(
+			[...documentsBySlug.entries()].sort(([a], [b]) => a.localeCompare(b)),
+		),
+		publicationUri: standardSitePublicationUri,
+	});
+	return `${JSON.stringify(manifest, null, 2)}\n`;
+}
 
 type ManifestOptions = {
 	manifestPath?: string;
