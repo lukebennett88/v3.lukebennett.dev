@@ -15,13 +15,6 @@ export default defineConfig({
 	build: {
 		format: 'file',
 	},
-	experimental: {
-		queuedRendering: {
-			contentCache: true,
-			enabled: true,
-		},
-		rustCompiler: true,
-	},
 	fonts: [
 		{
 			cssVariable: '--font-sans',
