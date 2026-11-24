@@ -6,15 +6,29 @@ import { formatToAustralianDate } from '../lib/posts';
 type Props = {
 	document: Array<DocumentElement>;
 	publishedAt: string;
+	/** Link cards show the body. Capturing an article body adds an expensive unmatched snapshot. */
+	shareBody?: boolean;
 };
 
-const { document, publishedAt } = Astro.props;
+const { document, publishedAt, shareBody = false } = Astro.props;
 ---
 
-<div class="mx-auto prose dark:prose-invert">
-	<time class="block text-sm" datetime={publishedAt}>
-		{formatToAustralianDate(publishedAt)}
-	</time>
-	<slot name="title" />
-	<DocumentRenderer document={document} />
-</div>
+<article class="mx-auto prose dark:prose-invert" data-vt-active>
+	<header class="not-prose mb-10">
+		<slot name="title" />
+		<time
+			class="mt-3 block w-fit text-sm text-gray-600 tabular-nums dark:text-gray-400"
+			data-vt-part="date"
+			datetime={publishedAt}
+		>
+			{formatToAustralianDate(publishedAt)}
+		</time>
+	</header>
+	{shareBody ? (
+		<div data-vt-part="body">
+			<DocumentRenderer document={document} />
+		</div>
+	) : (
+		<DocumentRenderer document={document} />
+	)}
+</article>

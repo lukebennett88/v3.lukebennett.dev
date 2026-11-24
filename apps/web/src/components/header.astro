@@ -13,8 +13,13 @@ const pathname = Astro.url.pathname;
 ---
 
 <header
-	class="flex flex-wrap items-center gap-4 px-4 py-8 sm:px-6 lg:px-8"
+	class={cn(
+		'site-header sticky z-10 flex flex-wrap items-center gap-4 rounded-t-2xl px-4 pt-6 pb-3 sm:px-6 md:pt-8 md:pb-4 lg:px-8',
+		'bg-gray-100 dark:bg-gray-900',
+	)}
 	role="banner"
+	transition:animate="initial"
+	transition:name="site-header"
 >
 	<a
 		class="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:inline-block focus-visible:rounded-full focus-visible:bg-gray-200 focus-visible:px-3 focus-visible:py-1.5 focus-visible:hover:text-gray-600 dark:focus-visible:bg-teal-700 dark:focus-visible:hover:text-white"
@@ -69,6 +74,7 @@ const pathname = Astro.url.pathname;
 									'bg-gray-100 group-hover:bg-white',
 									'dark:bg-gray-800 dark:group-hover:bg-gray-700',
 								)}
+								transition:animate="initial"
 								transition:name="nav-pill"
 							/>
 						) : null}

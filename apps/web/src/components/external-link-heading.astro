@@ -12,7 +12,7 @@ const { class: className, href, level } = Astro.props;
 const Tag = `h${level}` as const;
 ---
 
-<Tag class:list={['text-balance', className]}>
+<Tag class:list={['text-balance', className]} data-vt-part="title">
 	<a
 		class="[font-weight:inherit] underline decoration-teal-700 decoration-from-font underline-offset-[0.15em] transition-colors duration-150 hover:text-teal-800 dark:decoration-teal-500 dark:hover:text-teal-300"
 		href={href}

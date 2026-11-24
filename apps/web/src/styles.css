@@ -9,6 +9,14 @@
 	--font-mono: var(--font-mono);
 }
 
+/*
+	Tailwind's 65ch width varies with the font. Use the same 32.5rem width for
+	the sans-serif lists and serif articles to prevent a sideways shift.
+*/
+@theme {
+	--container-content: 32.5rem;
+}
+
 @layer utilities {
 	@keyframes steamFade {
 		0%,
@@ -47,6 +55,7 @@
 		@tailwindcss/typography, which also registers there.
 	*/
 	.prose {
+		max-width: var(--container-content);
 		font-family: var(--font-serif);
 	}
 
@@ -92,28 +101,227 @@
 }
 
 /*
-	View transitions. Astro disables these under prefers-reduced-motion.
-	The page crossfade stays quick so navigation never feels like it waits;
-	the active nav pill slides to its new item with a strong ease-out.
+	The negative top offset scrolls the mobile logo row or desktop top padding
+	away before the header sticks. Match the offsets to the header layout.
 */
-::view-transition-old(root),
-::view-transition-new(root) {
-	animation-duration: 180ms;
+:root {
+	/* pt-6 + logo h-11 + gap-4, leaving 0.5rem above the nav */
+	--site-header-top: calc(-1 * (1.5rem + 2.75rem + 1rem) + 0.5rem);
+	/* Height of the part that stays visible once stuck, for anchor links. */
+	--site-header-stuck-height: 3.75rem;
 }
 
-::view-transition-group(nav-pill) {
+@media (width >= 48rem) {
+	:root {
+		/* pt-8, leaving 0.75rem above the row */
+		--site-header-top: calc(-2rem + 0.75rem);
+		--site-header-stuck-height: 4.5rem;
+	}
+}
+
+.site-header {
+	top: var(--site-header-top);
+}
+
+/*
+	Keep the divider inside the header. Chrome includes overflow in the
+	snapshot and squeezes it into the header box, making the header jump.
+*/
+.site-header::after {
+	content: '';
+	position: absolute;
+	inset-inline: 0;
+	bottom: 0;
+	height: 1px;
+	background-color: var(--color-gray-200);
+	pointer-events: none;
+	opacity: 0;
+}
+
+.dark .site-header::after {
+	background-color: var(--color-gray-800);
+}
+
+@supports (animation-timeline: scroll()) {
+	.site-header::after {
+		animation: site-header-rule linear both;
+		animation-timeline: scroll(root);
+		animation-range: 1rem 4rem;
+	}
+}
+
+@keyframes site-header-rule {
+	to {
+		opacity: 1;
+	}
+}
+
+/*
+	Use a strong ease-out for short moves and `ease` for fades. The group's
+	curve made fades look like a cut.
+*/
+::view-transition-group(*) {
 	animation-duration: 260ms;
 	animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* The pill slides above the page but beneath the nav labels. */
+/*
+	Fade the old snapshot over the opaque new one to avoid double exposure
+	and keep the teal page background from showing through. Chrome rejects
+	`:not()` on these pseudo-elements, so handle unpaired snapshots below.
+*/
+::view-transition-old(*) {
+	/* The new snapshot paints above the old one by default. */
+	z-index: 1;
+	animation-name: vt-fade-out;
+	animation-duration: 200ms;
+	animation-timing-function: ease;
+}
+
+::view-transition-new(*) {
+	animation-name: none;
+	animation-duration: 250ms;
+	animation-timing-function: ease;
+}
+
+::view-transition-new(*):only-child {
+	animation-name: vt-fade-in;
+}
+
+/*
+	Scope shared names to the active detail page or card so they stay unique.
+*/
+[data-vt-active] [data-vt-part='title'] {
+	view-transition-name: shared-title;
+	view-transition-class: shared shared-title;
+}
+
+[data-vt-active] [data-vt-part='date'] {
+	view-transition-name: shared-date;
+	view-transition-class: shared;
+}
+
+[data-vt-active] [data-vt-part='body'] {
+	view-transition-name: shared-body;
+	view-transition-class: shared;
+}
+
+/*
+	Use the iOS drawer curve for long moves. shared-element-transitions.ts
+	sets the duration from travel distance when it runs.
+*/
+::view-transition-group(*.shared) {
+	animation-duration: 350ms;
+	animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/*
+	Scale both snapshots from the same top-left origin using the font-size
+	ratio set by shared-element-transitions.ts. Match the group's easing and
+	duration so glyphs stay aligned as the title moves.
+
+	Equal fade durations and `plus-lighter` keep the combined opacity at 1.
+	Blur softens differences in line wrapping. Browsers without
+	`view-transition-class` use the default fade above.
+*/
+::view-transition-old(*.shared-title),
+::view-transition-new(*.shared-title) {
+	transform-origin: top left;
+	animation-duration: 350ms, 250ms;
+	animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1), ease;
+	mix-blend-mode: plus-lighter;
+}
+
+::view-transition-old(*.shared-title) {
+	animation-name: shared-title-scale-out, shared-title-fade-out;
+}
+
+::view-transition-new(*.shared-title) {
+	animation-name: shared-title-scale-in, shared-title-fade-in;
+}
+
+@keyframes shared-title-scale-out {
+	to {
+		transform: scale(var(--vt-title-scale, 1));
+	}
+}
+
+@keyframes shared-title-scale-in {
+	from {
+		transform: scale(calc(1 / var(--vt-title-scale, 1)));
+	}
+}
+
+@keyframes shared-title-fade-out {
+	to {
+		opacity: 0;
+		filter: blur(2px);
+	}
+}
+
+@keyframes shared-title-fade-in {
+	from {
+		opacity: 0;
+		filter: blur(2px);
+	}
+}
+
+/*
+	Use a short crossfade with no group motion. The `html` prefix overrides
+	Astro's `animation: none !important`.
+*/
+@media (prefers-reduced-motion: reduce) {
+	html::view-transition-old(*) {
+		animation: vt-fade-out 150ms ease both !important;
+	}
+
+	html::view-transition-new(*) {
+		animation: vt-fade-in 150ms ease both !important;
+	}
+
+	html::view-transition-old(*),
+	html::view-transition-new(*) {
+		mix-blend-mode: plus-lighter;
+	}
+}
+
+@keyframes vt-fade-out {
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes vt-fade-in {
+	from {
+		opacity: 0;
+	}
+}
+
+/*
+	Keep moving content below the sticky header and the pill below the labels.
+*/
 ::view-transition-group(*) {
 	z-index: 1;
 }
 
-::view-transition-group(root),
-::view-transition-group(nav-pill) {
+::view-transition-group(root) {
 	z-index: 0;
+}
+
+::view-transition-group(site-header) {
+	z-index: 2;
+}
+
+::view-transition-group(nav-pill) {
+	z-index: 3;
+}
+
+/* Keep in sync with the labels in header.astro. */
+::view-transition-group(nav-home),
+::view-transition-group(nav-posts),
+::view-transition-group(nav-links),
+::view-transition-group(nav-blogroll) {
+	z-index: 4;
 }
 
 /*
@@ -135,7 +343,7 @@
 	}
 
 	[id] {
-		scroll-margin-top: 1rem; /* equivalent to theme('spacing[4]') */
+		scroll-margin-top: calc(var(--site-header-stuck-height, 0px) + 1rem);
 	}
 
 	/* Existing compatibility styles for v4 */

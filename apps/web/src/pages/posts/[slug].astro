@@ -29,6 +29,12 @@ export async function getStaticPaths() {
 
 <Layout title={title} standardSiteDocumentUri={standardSiteDocumentUri}>
 	<Post document={document} publishedAt={publishedAt}>
-		<h1 slot="title">{title}</h1>
+		<h1
+			class="text-4xl/tight font-extrabold text-balance text-gray-900 dark:text-white"
+			slot="title"
+			data-vt-part="title"
+		>
+			{title}
+		</h1>
 	</Post>
 </Layout>

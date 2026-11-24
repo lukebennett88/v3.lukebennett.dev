@@ -92,7 +92,7 @@ const ogImage = new URL('/og.jpg', Astro.site).toString();
 			<main
 				class={cn(
 					packs.innerPadding,
-					'flex-1 bg-gray-100 pt-10 pb-20 dark:bg-gray-900',
+					'flex-1 bg-gray-100 pt-12 pb-20 dark:bg-gray-900',
 				)}
 				id={MAIN_ID}
 			>
@@ -100,5 +100,8 @@ const ogImage = new URL('/og.jpg', Astro.site).toString();
 			</main>
 			<Footer />
 		</div>
+		<script>
+			import '../lib/shared-element-transitions';
+		</script>
 	</body>
 </html>
