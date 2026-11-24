@@ -26,7 +26,7 @@ export const GET: APIRoute = async ({ site }) => {
 						}),
 					),
 					date_published: toIsoString(entry.publishedAt),
-					...(type === 'link' ? { external_url: entry.linkedUrl } : undefined),
+					external_url: type === 'link' ? entry.linkedUrl : undefined,
 					id: url,
 					title: entry.title,
 					url,

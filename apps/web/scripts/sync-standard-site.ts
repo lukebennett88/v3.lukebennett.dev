@@ -104,10 +104,9 @@ export function compareOwnedDocumentFields(
 	generated: DocumentRecord,
 	remote: Record<string, unknown>,
 ): boolean {
-	return OWNED_DOCUMENT_FIELDS.every(
-		(field) =>
-			JSON.stringify(remote[field]) === JSON.stringify(generated[field]),
-	);
+	return OWNED_DOCUMENT_FIELDS.every((field) => {
+		return JSON.stringify(remote[field]) === JSON.stringify(generated[field]);
+	});
 }
 
 export function mergeOwnedDocumentFields(
@@ -277,7 +276,7 @@ function truncateDescription(textContent: string): string {
 export async function loadPublishedPosts(): Promise<Array<PublishedPost>> {
 	const filenames = (await readdir(POSTS_DIR))
 		.filter((filename) => filename.endsWith('.mdoc'))
-		.sort();
+		.toSorted();
 	const posts: Array<PublishedPost> = [];
 
 	for (const filename of filenames) {

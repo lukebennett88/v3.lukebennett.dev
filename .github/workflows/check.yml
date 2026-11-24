@@ -37,10 +37,5 @@ jobs:
       - name: 🚚 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: 🚀 Setup Biome
-        uses: biomejs/setup-biome@v2
-        with:
-          version: latest
-
-      - name: ⚡ Run checks with turbo (lint, format, type-check)
+      - name: ⚡ Check formatting, lint and types
         run: pnpm run check

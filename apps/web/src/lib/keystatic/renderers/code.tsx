@@ -15,9 +15,10 @@ export function Code({
 			lang: language,
 			theme: 'poimandres',
 		});
-	} catch (_error) {
+	} catch (err) {
 		throw new Error(
 			`Failed to highlight code block with language "${language}"`,
+			{ cause: err },
 		);
 	}
 

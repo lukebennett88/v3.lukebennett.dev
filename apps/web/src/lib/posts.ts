@@ -12,44 +12,43 @@ type Post = {
 };
 
 export function sortPosts<P extends Post>(posts: Array<P>) {
-	return posts.sort(
-		(a, b) =>
+	return posts.toSorted((a, b) => {
+		return (
 			new Date(b.entry.publishedAt).getTime() -
-			new Date(a.entry.publishedAt).getTime(),
-	);
+			new Date(a.entry.publishedAt).getTime()
+		);
+	});
 }
 
 export async function getSortedEntries() {
 	const [links, posts] = await Promise.all([
-		reader.collections.posts.all().then((posts) =>
-			posts.map((post) => ({
+		reader.collections.posts.all().then((entries) => {
+			return entries.map((post) => ({
 				...post,
 				pathname: `/posts/${post.slug}`,
 				type: 'post' as const,
-			})),
-		),
-		reader.collections.links.all().then((links) =>
-			links.map((link) => ({
+			}));
+		}),
+		reader.collections.links.all().then((entries) => {
+			return entries.map((link) => ({
 				...link,
 				pathname: `/links/${link.slug}`,
 				type: 'link' as const,
-			})),
-		),
+			}));
+		}),
 	]);
 
-	return sortPosts([...posts, ...links]).filter(
-		(item) =>
-			item.type === 'link' || (item.type === 'post' && !item.entry.isDraft),
-	);
+	return sortPosts([...posts, ...links]).filter((item) => {
+		return (
+			item.type === 'link' || (item.type === 'post' && !item.entry.isDraft)
+		);
+	});
 }
 
 export function toIsoString(date: unknown): string {
-	return (
-		// biome-ignore lint/style/noNonNullAssertion: split always returns array with at least one element
-		new Date(typeof date === 'string' ? date : startDate)
-			.toISOString()
-			.split('T')[0]!
-	);
+	return new Date(typeof date === 'string' ? date : startDate)
+		.toISOString()
+		.split('T')[0]!;
 }
 
 export function formatToAustralianDate(date: string) {

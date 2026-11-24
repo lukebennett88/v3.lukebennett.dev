@@ -2,47 +2,46 @@
 	"name": "@lukebennett/root",
 	"private": true,
 	"description": "Personal website for Luke Bennett",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/lukebennett88/v3.lukebennett.dev"
-	},
 	"license": "MIT",
 	"author": {
 		"name": "Luke Bennett",
 		"email": "hello@lukebennett.com.au"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/lukebennett88/v3.lukebennett.dev"
 	},
 	"type": "module",
 	"scripts": {
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=./packages/*",
 		"build:web": "turbo run build --filter=@lukebennett/web...",
-		"check": "turbo run check:format check:lint check:types",
-		"check:format": "turbo run check:format",
-		"check:lint": "turbo run check:lint",
+		"check": "vp check && pnpm run check:types",
+		"check:format": "vp fmt --check",
+		"check:lint": "vp lint",
 		"check:types": "turbo run check:types",
 		"clean": "pnpm run -r clean && rm -rf node_modules",
 		"clean:outputs": "pnpm run -r clean:outputs && rm -rf node_modules/.cache/",
 		"dev": "turbo run dev",
 		"dev:web": "turbo dev --filter=@lukebennett/web",
-		"fix": "turbo run fix:format fix:lint",
-		"fix:format": "turbo run fix:format",
-		"fix:lint": "turbo run fix:lint",
-		"format": "pnpm biome format --write",
+		"fix": "vp check --fix",
+		"fix:format": "vp fmt --write",
+		"fix:lint": "vp lint --fix",
 		"fresh": "pnpm run clean && pnpm install",
 		"preinstall": "pnpm dlx only-allow pnpm",
 		"postinstall": "manypkg check",
 		"sort:packages": "pnpm dlx sort-package-json 'package.json' './apps/*/package.json' './packages/*/package.json'"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.5.12",
 		"@manypkg/cli": "catalog:",
 		"turbo": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vite-plus": "catalog:"
 	},
-	"packageManager": "pnpm@11.25.0+sha512.5cde925b4f075f725eb71fbae18a42ffe784524789f19b61c731cb8721ec28aaee160e01a8d5af4fedb2a42cdbf300efe23db356b0d4a17b4d63e11f8ab7c956",
 	"engines": {
 		"node": ">=22"
 	},
+	"packageManager": "pnpm@12.22.0+sha512.894940a3d9a57dfa6fd373990fb4e41e09c2f2d76d982ed1d75275d39267f988fb4e2d40900cbe9921c68d97c67aa1a1096d276633db248f7b34927ac9ddb7a4",
 	"manypkg": {
 		"defaultBranch": "main",
 		"workspaceProtocol": "require"

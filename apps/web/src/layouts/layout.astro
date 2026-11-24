@@ -59,11 +59,9 @@ const ogImage = new URL('/og.jpg', Astro.site).toString();
 			content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1"
 		/>
 		<link rel="canonical" href={canonicalUrl} />
-		{
-			standardSiteDocumentUri ? (
-				<link rel="site.standard.document" href={standardSiteDocumentUri} />
-			) : null
-		}
+		{standardSiteDocumentUri ? (
+			<link rel="site.standard.document" href={standardSiteDocumentUri} />
+		) : null}
 		<meta name="description" content={description} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
@@ -94,7 +92,7 @@ const ogImage = new URL('/og.jpg', Astro.site).toString();
 			<main
 				class={cn(
 					packs.innerPadding,
-					'flex-1 bg-gray-100 pb-20 pt-10 dark:bg-gray-900',
+					'flex-1 bg-gray-100 pt-10 pb-20 dark:bg-gray-900',
 				)}
 				id={MAIN_ID}
 			>

@@ -6,21 +6,15 @@
 		"astro": "astro",
 		"build": "astro build",
 		"build:production": "pnpm run check && pnpm run standard-site:sync -- --write && pnpm run build",
-		"check": "pnpm exec prettier 'src/**/*.astro' --cache --check && pnpm biome check && pnpm run check:types",
-		"check:format": "pnpm exec prettier 'src/**/*.astro' --cache --check && pnpm biome format",
-		"check:lint": "pnpm biome lint",
+		"check": "vp check && pnpm run check:types",
 		"check:types": "tsc --noEmit",
 		"clean": "pnpm clean:outputs && rm -rf node_modules",
 		"clean:outputs": "rm -rf .astro .turbo tsconfig.tsbuildinfo",
 		"dev": "astro dev --host 127.0.0.1",
-		"fix": "pnpm biome check --write",
-		"fix:format": "pnpm exec prettier 'src/**/*.astro' --cache --write && pnpm biome format --write",
-		"fix:lint": "pnpm biome lint --write",
-		"lint": "pnpm biome lint --write",
 		"standard-site:delete-record": "node --env-file=.env.local --experimental-strip-types scripts/delete-record.ts",
 		"standard-site:list-records": "node --env-file=.env.local --experimental-strip-types scripts/list-records.ts",
 		"standard-site:sync": "node --experimental-strip-types scripts/sync-standard-site.ts",
-		"test:standard-site": "node --experimental-strip-types --test src/lib/standard-site.test.ts scripts/atproto.test.ts scripts/sync-standard-site.test.ts"
+		"test:standard-site": "vp test run --root ../.. src/lib/standard-site.test.ts scripts/atproto.test.ts scripts/sync-standard-site.test.ts"
 	},
 	"dependencies": {
 		"@astrojs/compiler-rs": "catalog:",
@@ -50,10 +44,8 @@
 		"@tailwindcss/typography": "catalog:",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
-		"prettier": "catalog:",
-		"prettier-plugin-astro": "catalog:",
-		"prettier-plugin-tailwindcss": "catalog:",
 		"react-compiler-runtime": "catalog:",
-		"vite": "catalog:"
+		"vite": "catalog:",
+		"vite-plus": "catalog:"
 	}
 }

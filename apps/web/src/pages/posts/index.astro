@@ -4,8 +4,10 @@ import { cn } from '../../lib/cn';
 import { reader } from '../../lib/keystatic/reader';
 import { formatToAustralianDate, sortPosts } from '../../lib/posts';
 
-const posts = sortPosts(await reader.collections.posts.all()).filter((post) =>
-	process.env.NODE_ENV === 'production' ? !post.entry.isDraft : true,
+const posts = sortPosts(await reader.collections.posts.all()).filter(
+	function (post) {
+		return process.env.NODE_ENV === 'production' ? !post.entry.isDraft : true;
+	},
 );
 ---
 
@@ -14,30 +16,29 @@ const posts = sortPosts(await reader.collections.posts.all()).filter((post) =>
 		<div class="prose dark:prose-invert">
 			<h1>Posts</h1>
 			<p class="text-balance">
-				Longer form content.<br />For interesting links with limited commentary,
-
-				{' '}<a href="links">check out the links section</a> instead.
+				Longer form content.
+				<br />
+				For interesting links with limited commentary,{' '}
+				<a href="links">check out the links section</a> instead.
 			</p>
 		</div>
 		<ul class="flex max-w-prose flex-col gap-1 sm:gap-3" role="list">
-			{
-				posts.map(({ slug, entry }) => (
-					<li
-						class={cn(
-							'prose dark:prose-invert bg-white p-4 wrap-break-word shadow-sm sm:rounded-xl dark:bg-gray-800',
-							entry.isDraft && 'border-2 border-dashed border-yellow-500',
-						)}
-					>
-						<a class="inline-block" href={`/posts/${slug}`}>
-							<h2 class="m-0">{entry.title}</h2>
-						</a>
-						<br />
-						<time class="text-sm" datetime={entry.publishedAt}>
-							{formatToAustralianDate(entry.publishedAt)}
-						</time>
-					</li>
-				))
-			}
+			{posts.map(({ slug, entry }) => (
+				<li
+					class={cn(
+						'prose bg-white p-4 wrap-break-word shadow-sm sm:rounded-xl dark:bg-gray-800 dark:prose-invert',
+						entry.isDraft && 'border-2 border-dashed border-yellow-500',
+					)}
+				>
+					<a class="inline-block" href={`/posts/${slug}`}>
+						<h2 class="m-0">{entry.title}</h2>
+					</a>
+					<br />
+					<time class="text-sm" datetime={entry.publishedAt}>
+						{formatToAustralianDate(entry.publishedAt)}
+					</time>
+				</li>
+			))}
 		</ul>
 	</div>
 </Layout>

@@ -1,11 +1,10 @@
 import { component, fields } from '@keystatic/core';
-
 import { CloudImage } from '../renderers/cloud-image';
 
 export const cloudImage = component({
 	label: 'Cloud Image',
-	preview({ fields }) {
-		const src = fields.src.value;
+	preview(props) {
+		const src = props.fields.src.value;
 
 		// `CloudImage` calls `new URL(src)` and throws on any not-yet-valid URL
 		// (empty, whitespace-only, or missing protocol), so guard while the
@@ -22,11 +21,11 @@ export const cloudImage = component({
 
 		return (
 			<CloudImage
-				alt={fields.alt.value}
-				height={fields.height.value}
-				priority={fields.priority.value}
+				alt={props.fields.alt.value}
+				height={props.fields.height.value}
+				priority={props.fields.priority.value}
 				src={src}
-				width={fields.width.value}
+				width={props.fields.width.value}
 			/>
 		);
 	},

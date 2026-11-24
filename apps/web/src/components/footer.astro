@@ -35,42 +35,38 @@ const rssFeeds = [
 const year = new Date().getFullYear();
 ---
 
-<footer
-	class="mx-auto flex w-full max-w-4xl flex-col items-center justify-between gap-4 px-4 py-8 text-gray-700 sm:px-6 lg:px-8 dark:text-gray-400"
->
+<footer class="mx-auto flex w-full max-w-4xl flex-col items-center justify-between gap-4 px-4 py-8 text-gray-700 sm:px-6 lg:px-8 dark:text-gray-400">
 	<nav
 		aria-label="RSS Feeds"
 		class="flex flex-col items-center"
 		role="navigation"
 	>
-		<h2>Subscribe to my RSS feed</h2><ul class="flex items-center gap-4">
-			{
-				rssFeeds.map(({ label, href }) => (
-					<li>
-						<a class="inline-flex items-center gap-2 underline" href={href}>
-							{label}
-						</a>
-					</li>
-				))
-			}
+		<h2>Subscribe to my RSS feed</h2>
+		<ul class="flex items-center gap-4">
+			{rssFeeds.map(({ label, href }) => (
+				<li>
+					<a class="inline-flex items-center gap-2 underline" href={href}>
+						{label}
+					</a>
+				</li>
+			))}
 		</ul>
 	</nav>
 	<nav aria-label="Social" class="flex flex-col items-center" role="navigation">
 		<ul class="flex items-center gap-4">
-			{
-				socialLinks.map(({ label, href, icon: Icon }) => (
-					<li>
-						<a
-							class="block rounded-sm text-gray-500 transition-colors duration-200 hover:text-gray-700"
-							href={href}
-							rel="me"
-						>
-							<span class="sr-only">{label}</span>
-							<Icon class="h-4 w-4" />
-						</a>
-					</li>
-				))
-			}
+			{socialLinks.map(({ label, href, icon: Icon }) => (
+				<li>
+					<a
+						class="block rounded-sm text-gray-500 transition-colors duration-200 hover:text-gray-700"
+						href={href}
+						rel="me"
+					>
+						<span class="sr-only">{label}</span>
+						<Icon class="h-4 w-4" />
+					</a>
+				</li>
+			))}
 		</ul>
-	</nav><p>&copy; {year} Luke Bennett. All rights reserved.</p>
+	</nav>
+	<p>&copy; {year} Luke Bennett. All rights reserved.</p>
 </footer>

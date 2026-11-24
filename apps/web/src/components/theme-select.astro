@@ -17,7 +17,7 @@ type Props = {
 
 <label
 	class={cn(
-		'relative rounded-full flex items-center text-sm',
+		'relative flex items-center rounded-full text-sm',
 		'text-gray-800',
 		'dark:text-gray-200',
 	)}
@@ -30,18 +30,16 @@ type Props = {
 	/>
 	<select
 		class={cn(
-			'appearance-none bg-transparent px-8 rounded-full h-8 text-xs font-medium shadow-sm',
+			'h-8 appearance-none rounded-full bg-transparent px-8 text-xs font-medium shadow-sm',
 			'bg-gray-100 hover:bg-white active:bg-gray-100',
 			'dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-800',
 		)}
 		id="theme-switcher"
 		value={Astro.props.value}
 	>
-		{
-			Astro.props.options.map(({ value, selected, label }) => (
-				<option value={value} selected={selected} set:html={label} />
-			))
-		}
+		{Astro.props.options.map(({ value, selected, label }) => (
+			<option value={value} selected={selected} set:html={label} />
+		))}
 	</select>
 	<Icon
 		name="down-caret"

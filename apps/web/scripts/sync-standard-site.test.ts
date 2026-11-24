@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import test from 'node:test';
+import { test } from 'vite-plus/test';
 import {
 	buildDocumentRecord,
 	compareOwnedDocumentFields,
@@ -37,36 +37,32 @@ test('extractPortableContent rejects missing frontmatter boundary', () => {
 });
 
 test('parsePublishedPost rejects missing published metadata', () => {
-	assert.throws(
-		() =>
-			parsePublishedPost(
-				'untitled.mdoc',
-				`---
+	assert.throws(() => {
+		return parsePublishedPost(
+			'untitled.mdoc',
+			`---
 publishedAt: 2024-01-20
 isDraft: false
 ---
 Hello.
 `,
-			),
-		/untitled.mdoc is missing title/,
-	);
+		);
+	}, /untitled.mdoc is missing title/);
 });
 
 test('parsePublishedPost rejects invalid record keys', () => {
-	assert.throws(
-		() =>
-			parsePublishedPost(
-				'.mdoc',
-				`---
+	assert.throws(() => {
+		return parsePublishedPost(
+			'.mdoc',
+			`---
 title: Hello
 publishedAt: 2024-01-20
 isDraft: false
 ---
 Hello.
 `,
-			),
-		/.mdoc has an invalid ATProto record key/,
-	);
+		);
+	}, /.mdoc has an invalid ATProto record key/);
 });
 
 test('isValidRecordKey accepts current slug shape', () => {
@@ -178,31 +174,29 @@ test('planReconciliation creates missing records and deletes withdrawn post reco
 });
 
 test('planReconciliation fails on unexpected existing record key', () => {
-	assert.throws(
-		() =>
-			planReconciliation({
-				did: 'did:plc:example',
-				existingRecords: [
-					{
-						uri: 'at://did:plc:example/site.standard.document/generated-key',
-						value: {
-							$type: 'site.standard.document',
-							path: '/posts/hello-world',
-							site: 'at://did:plc:3z5ja7l2rhnmtr2bni5dyfe7/site.standard.publication/3mnqwgvxn372f',
-						},
+	assert.throws(() => {
+		return planReconciliation({
+			did: 'did:plc:example',
+			existingRecords: [
+				{
+					uri: 'at://did:plc:example/site.standard.document/generated-key',
+					value: {
+						$type: 'site.standard.document',
+						path: '/posts/hello-world',
+						site: 'at://did:plc:3z5ja7l2rhnmtr2bni5dyfe7/site.standard.publication/3mnqwgvxn372f',
 					},
-				],
-				posts: [
-					{
-						portableContent: 'Hello.',
-						publishedAt: '2024-01-20',
-						slug: 'hello-world',
-						title: 'Hello World',
-					},
-				],
-			}),
-		/manual cleanup/,
-	);
+				},
+			],
+			posts: [
+				{
+					portableContent: 'Hello.',
+					publishedAt: '2024-01-20',
+					slug: 'hello-world',
+					title: 'Hello World',
+				},
+			],
+		});
+	}, /manual cleanup/);
 });
 
 test('recordSyncedDocumentUri records only matching document AT-URIs', () => {
@@ -218,15 +212,13 @@ test('recordSyncedDocumentUri records only matching document AT-URIs', () => {
 		documentsBySlug.get('hello-world'),
 		'at://did:plc:example/site.standard.document/hello-world',
 	);
-	assert.throws(
-		() =>
-			recordSyncedDocumentUri(
-				documentsBySlug,
-				'hello-world',
-				'at://did:plc:example/site.standard.document/generated-key',
-			),
-		/Expected document URI/,
-	);
+	assert.throws(() => {
+		return recordSyncedDocumentUri(
+			documentsBySlug,
+			'hello-world',
+			'at://did:plc:example/site.standard.document/generated-key',
+		);
+	}, /Expected document URI/);
 });
 
 test('toPlainText strips Markdown links and Markdoc component blocks', () => {

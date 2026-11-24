@@ -8,37 +8,32 @@ const content = await page.content();
 ---
 
 <Layout title="Blogroll">
-	<div class="prose dark:prose-invert mx-auto">
+	<div class="mx-auto prose dark:prose-invert">
 		<DocumentRenderer document={content} />
 		<ul>
-			{
-				page.blogs.map((blog) => (
-					<li>
-						<a href={blog.href}>{blog.label}</a>
-						{blog.rss && (
-							<a href={blog.rss} class="text-sm text-gray-500 underline">
-								(RSS)
-							</a>
-						)}
-						{blog.links.length > 0 && (
-							<ul class="not-prose float-end font-mono text-xs font-bold">
-								{blog.links.filter(Boolean).map((link, index) => (
-									<Fragment>
-										<li>
-											<a
-												href={link.href}
-												class="text-sm text-gray-500 underline"
-											>
-												{`#${link.label}${index < blog.links.length - 1 ? ', ' : ''}`}
-											</a>
-										</li>
-									</Fragment>
-								))}
-							</ul>
-						)}
-					</li>
-				))
-			}
+			{page.blogs.map((blog) => (
+				<li>
+					<a href={blog.href}>{blog.label}</a>
+					{blog.rss && (
+						<a href={blog.rss} class="text-sm text-gray-500 underline">
+							(RSS)
+						</a>
+					)}
+					{blog.links.length > 0 && (
+						<ul class="not-prose float-end font-mono text-xs font-bold">
+							{blog.links.filter(Boolean).map((link, index) => (
+								<Fragment>
+									<li>
+										<a href={link.href} class="text-sm text-gray-500 underline">
+											{`#${link.label}${index < blog.links.length - 1 ? ', ' : ''}`}
+										</a>
+									</li>
+								</Fragment>
+							))}
+						</ul>
+					)}
+				</li>
+			))}
 		</ul>
 	</div>
 </Layout>

@@ -63,7 +63,7 @@ function getSlug(node: React.ReactNode) {
 	return slugify(getTextNode(node));
 }
 
-function getTextNode(node: React.ReactNode): string {
+function getTextNode(node: unknown): string {
 	if (!node) return '';
 	if (typeof node === 'string') return node;
 	if (typeof node === 'number') return String(node);
@@ -86,7 +86,7 @@ function getTextNode(node: React.ReactNode): string {
 		node.props !== null &&
 		'node' in node.props
 	) {
-		return getTextNode((node.props as { node: React.ReactNode }).node);
+		return getTextNode(node.props.node);
 	}
 
 	return '';

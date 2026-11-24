@@ -19,7 +19,9 @@ export function serializeStandardSiteManifest(
 ): string {
 	const manifest = StandardSiteManifestSchema.parse({
 		documentsBySlug: Object.fromEntries(
-			[...documentsBySlug.entries()].sort(([a], [b]) => a.localeCompare(b)),
+			Array.from(documentsBySlug.entries()).toSorted(([a], [b]) => {
+				return a.localeCompare(b);
+			}),
 		),
 		publicationUri: standardSitePublicationUri,
 	});

@@ -1,10 +1,3 @@
-# image-size and extract-zip are at latest upstream with no patched version published;
-# transitive via @astrojs/netlify dev chain; re-check when Netlify updates its deps.
-auditConfig:
-  ignoreGhsas:
-    - GHSA-w3rx-r6r6-pgpr
-    - GHSA-5p2g-fcmc-qvqq
-    - GHSA-jmr9-qjv8-65gv
 allowBuilds:
   "@parcel/watcher": false
   esbuild: false
@@ -12,8 +5,9 @@ allowBuilds:
 catalogMode: prefer
 minimumReleaseAge: 2880 # Security: Wait 2 days (2880 minutes) before installing newly released packages
 overrides:
-  sharp: ^0.35.4
-  toml: ^4.3.0
+  sharp: ^0.35.5
+  toml: ^5.0.1
+  vite@*: "catalog:"
 packages:
   - apps/*
   - packages/*
@@ -22,36 +16,33 @@ peerDependencyRules:
     "@astrojs/check>typescript": "7"
 trustLockfile: true
 catalog:
-  "@astrojs/check": ^0.9.10
-  "@astrojs/compiler-rs": ^0.4.0
-  "@astrojs/markdoc": ^2.0.9
-  "@astrojs/netlify": ^8.2.5
-  "@astrojs/react": ^6.0.5
+  "@astrojs/check": ^0.9.12
+  "@astrojs/compiler-rs": ^0.5.3
+  "@astrojs/markdoc": ^2.1.5
+  "@astrojs/netlify": ^8.2.14
+  "@astrojs/react": ^7.1.9
   "@astrojs/rss": ^4.0.19
-  "@astrojs/sitemap": ^3.7.4
-  "@biomejs/biome": 2.3.0
+  "@astrojs/sitemap": ^3.7.6
   "@keystatic/astro": ^6.0.0
-  "@keystatic/core": ^0.6.9
+  "@keystatic/core": ^0.6.10
   "@manypkg/cli": ^0.25.1
-  "@sindresorhus/slugify": ^3.0.1
+  "@sindresorhus/slugify": ^4.0.1
   "@tailwindcss/typography": ^0.5.20
-  "@tailwindcss/vite": ^4.3.3
-  "@types/react": ^19.2.18
-  "@types/react-dom": ^19.2.7
+  "@tailwindcss/vite": ^4.3.5
+  "@types/react": ^19.3.0
+  "@types/react-dom": ^19.3.0
   "@unpic/react": ^1.0.2
-  astro: ^7.3.1
+  astro: ^7.4.13
   clsx: ^2.1.1
-  prettier: ^3.9.6
-  prettier-plugin-astro: ^0.14.1
-  prettier-plugin-tailwindcss: ^0.8.1
-  react: ^19.2.8
+  react: ^19.3.1
   react-compiler-runtime: 19.0.0-beta-ebf51a3-20250411
-  react-dom: ^19.2.8
-  shiki: ^4.4.3
-  tailwind-merge: ^3.6.0
-  tailwindcss: ^4.3.3
+  react-dom: ^19.3.1
+  shiki: ^4.6.0
+  tailwind-merge: ^3.7.1
+  tailwindcss: ^4.3.5
   tiny-invariant: ^1.3.3
-  turbo: ^2.10.12
+  turbo: ^2.11.13
   typescript: ^7.0.2
-  vite: ^8.2.2
-  zod: ^4.5.4
+  vite: npm:@voidzero-dev/vite-plus-core@8.3.8000
+  vite-plus: 1.7.0
+  zod: ^4.6.7
