@@ -15,13 +15,15 @@ async function main() {
 
 	for (const record of records) {
 		const rkey = getRkey(record.uri);
-		const path = record.value?.path ?? '(no path)';
+		const path = record.value.path;
 		const expectedRkey =
 			typeof path === 'string' && path.startsWith('/posts/')
 				? path.slice('/posts/'.length)
 				: null;
 		const match = expectedRkey === rkey ? '' : ' ← WRONG KEY';
-		console.log(`${rkey}  ${path}${match}`);
+		console.log(
+			`${rkey}  ${typeof path === 'string' ? path : '(no path)'}${match}`,
+		);
 	}
 	console.log(`\n${records.length} records`);
 }

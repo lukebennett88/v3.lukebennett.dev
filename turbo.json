@@ -1,19 +1,20 @@
 {
-	"$schema": "https://turbo.build/schema.json",
-	"globalDependencies": ["**/.env.*local"],
+	"$schema": "./node_modules/turbo/schema.json",
+	"globalDependencies": [
+		"**/.env.*local",
+		"packages/tsconfig/*.json",
+		"vite.config.ts"
+	],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": [".next/**", "!.next/cache/**"]
+			"env": ["NODE_ENV"],
+			"outputs": ["dist/**", ".netlify/v1/**"]
 		},
-		"check:format": {},
-		"check:lint": {},
 		"check:types": {},
 		"dev": {
 			"cache": false,
 			"persistent": true
-		},
-		"fix:format": {},
-		"fix:lint": {}
+		}
 	}
 }

@@ -39,28 +39,32 @@ const DidResponseSchema = z.object({
 });
 
 export interface AtprotoRepo {
-	createRecord(input: {
+	createRecord: (input: {
 		collection: string;
 		rkey: string;
 		record: unknown;
 		validate?: boolean;
-	}): Promise<{ uri: string }>;
-	deleteRecord(input: { collection: string; rkey: string }): Promise<void>;
+	}) => Promise<{ uri: string }>;
+	deleteRecord: (input: { collection: string; rkey: string }) => Promise<void>;
 	readonly did: string;
-	listRecords(collection: string): Promise<Array<ExistingRecord>>;
-	putRecord(input: {
+	listRecords: (collection: string) => Promise<Array<ExistingRecord>>;
+	putRecord: (input: {
 		collection: string;
 		rkey: string;
 		record: unknown;
 		validate?: boolean;
-	}): Promise<{ uri: string }>;
+	}) => Promise<{ uri: string }>;
 }
+
+type XrpcRequestInit = Omit<RequestInit, 'headers'> & {
+	headers?: Record<string, string>;
+};
 
 async function xrpc<ResponseBody>(
 	pds: string,
 	path: string,
 	schema: z.ZodType<ResponseBody>,
-	init: RequestInit = {},
+	init: XrpcRequestInit = {},
 ): Promise<ResponseBody> {
 	const response = await fetch(`${pds}/xrpc/${path}`, {
 		...init,
@@ -81,7 +85,7 @@ async function xrpc<ResponseBody>(
 async function xrpcVoid(
 	pds: string,
 	path: string,
-	init: RequestInit = {},
+	init: XrpcRequestInit = {},
 ): Promise<void> {
 	const response = await fetch(`${pds}/xrpc/${path}`, {
 		...init,
@@ -152,13 +156,16 @@ export function getRkey(uri: string): string {
 	return uri.slice(index + 1);
 }
 
-export async function connectAtprotoRepo(input: {
+export async function connectAtprotoRepo({
+	identifier,
+	password,
+}: {
 	identifier: string;
 	password: string;
 }): Promise<AtprotoRepo> {
-	const did = await resolveDid(input.identifier);
+	const did = await resolveDid(identifier);
 	const pds = await resolvePds(did);
-	const session = await createSession(pds, input.identifier, input.password);
+	const session = await createSession(pds, identifier, password);
 	const auth = { Authorization: `Bearer ${session.accessJwt}` };
 
 	return {
@@ -255,14 +262,14 @@ export async function connectAtprotoRepo(input: {
 	};
 }
 
-export function createInMemoryAtprotoRepo(input?: {
+export function createInMemoryAtprotoRepo(seed?: {
 	did?: string;
 	records?: Array<ExistingRecord>;
 }): AtprotoRepo {
-	const did = input?.did ?? 'did:plc:inmemory';
+	const did = seed?.did ?? 'did:plc:inmemory';
 	const records = new Map<string, ExistingRecord>();
 
-	for (const record of input?.records ?? []) {
+	for (const record of seed?.records ?? []) {
 		records.set(record.uri, record);
 	}
 
@@ -274,9 +281,9 @@ export function createInMemoryAtprotoRepo(input?: {
 		did,
 		async listRecords(collection: string): Promise<Array<ExistingRecord>> {
 			const prefix = `at://${did}/${collection}/`;
-			return [...records.values()].filter((record) =>
-				record.uri.startsWith(prefix),
-			);
+			return Array.from(records.values()).filter((record) => {
+				return record.uri.startsWith(prefix);
+			});
 		},
 		async createRecord(input: {
 			collection: string;

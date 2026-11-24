@@ -1,5 +1,5 @@
 declare global {
 	const ThemeProvider: {
-		updatePickers(theme?: string): void;
+		updatePickers: (theme?: string) => void;
 	};
 }

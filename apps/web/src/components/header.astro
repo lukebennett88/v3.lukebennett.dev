@@ -18,8 +18,11 @@ const pathname = Astro.url.pathname;
 >
 	<a
 		class="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:inline-block focus-visible:rounded-full focus-visible:bg-gray-200 focus-visible:px-3 focus-visible:py-1.5 focus-visible:hover:text-gray-600 dark:focus-visible:bg-teal-700 dark:focus-visible:hover:text-white"
-		href="#main">Skip to main content</a
-	><div class="flex flex-1 items-center">
+		href="#main"
+	>
+		Skip to main content
+	</a>
+	<div class="flex flex-1 items-center">
 		<a
 			class={cn(
 				'h-11 w-11 rounded-full bg-white p-1 font-sans shadow-sm transition-colors',
@@ -27,60 +30,60 @@ const pathname = Astro.url.pathname;
 				'dark:bg-teal-600 dark:text-gray-900 dark:hover:bg-teal-500',
 			)}
 			href="/"
-			><span class="sr-only">Luke Bennett</span><svg
+		>
+			<span class="sr-only">Luke Bennett</span>
+			<svg
 				aria-hidden="true"
 				fill="currentColor"
 				fill-rule="evenodd"
 				focusable="false"
 				role="img"
 				viewBox="0 0 24 24"
-				><path
-					d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12zm0-4.836l-4.8-2.4v-12l-2.4 1.2v12l7.2 3.6 7.2-3.6v-4.8l-2.4-1.2 2.4-1.2v-4.8l-7.2-3.6v16.8zm4.8-4.8l-2.4-1.2v4.8l2.4-1.2v-2.4zm0-7.2l-2.4-1.2v4.8l2.4-1.2v-2.4z"
-				></path></svg
-			></a
-		>
-	</div><nav
+			>
+				<path d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12zm0-4.836l-4.8-2.4v-12l-2.4 1.2v12l7.2 3.6 7.2-3.6v-4.8l-2.4-1.2 2.4-1.2v-4.8l-7.2-3.6v16.8zm4.8-4.8l-2.4-1.2v4.8l2.4-1.2v-2.4zm0-7.2l-2.4-1.2v4.8l2.4-1.2v-2.4z"></path>
+			</svg>
+		</a>
+	</div>
+	<nav
 		aria-label="Primary"
 		class="order-last flex w-full justify-center md:order-0 md:w-auto"
 		role="navigation"
 	>
 		<ul
 			class={cn(
-				'flex gap-2 shadow-inner items-center rounded-full p-1.5 text-sm font-medium',
+				'flex items-center gap-2 rounded-full p-1.5 text-sm font-medium shadow-inner',
 				'bg-gray-200 text-gray-800 ring-gray-900/5',
 				'dark:bg-gray-950 dark:text-gray-200 dark:ring-gray-800',
 			)}
 		>
-			{
-				mainNav.map(({ label, href }) => {
-					const isHighlighted =
-						href === '/' ? pathname === href : pathname?.includes(href);
-					return (
-						<li class="relative focus-within:z-10">
-							<a
-								class={cn(
-									isHighlighted
-										? [
-												'shadow-sm',
-												'bg-gray-100 hover:bg-white active:bg-gray-100',
-												'dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-800',
-											]
-										: [
-												'text-gray-800 hover:text-teal-700 active:text-teal-600',
-												'dark:text-gray-200 dark:hover:text-teal-500 dark:active:text-teal-400',
-											],
-									'relative inline-block rounded-full px-4 py-1.5 text-xs font-medium transition',
-								)}
-								href={href}
-								transition:animate="initial"
-								transition:name={isHighlighted ? 'headerNavItem' : undefined}
-							>
-								{label}
-							</a>
-						</li>
-					);
-				})
-			}
+			{mainNav.map(({ label, href }) => {
+				const isHighlighted =
+					href === '/' ? pathname === href : pathname?.includes(href);
+				return (
+					<li class="relative focus-within:z-10">
+						<a
+							class={cn(
+								isHighlighted
+									? [
+											'shadow-sm',
+											'bg-gray-100 hover:bg-white active:bg-gray-100',
+											'dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-800',
+										]
+									: [
+											'text-gray-800 hover:text-teal-700 active:text-teal-600',
+											'dark:text-gray-200 dark:hover:text-teal-500 dark:active:text-teal-400',
+										],
+								'relative inline-block rounded-full px-4 py-1.5 text-xs font-medium transition',
+							)}
+							href={href}
+							transition:animate="initial"
+							transition:name={isHighlighted ? 'headerNavItem' : undefined}
+						>
+							{label}
+						</a>
+					</li>
+				);
+			})}
 		</ul>
 	</nav>
 	<ThemeSwitcher />

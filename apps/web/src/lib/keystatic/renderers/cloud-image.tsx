@@ -1,5 +1,4 @@
 import { Image, type ImageProps } from '@unpic/react';
-import invariant from 'tiny-invariant';
 import { cn } from '../../cn';
 
 const MAX_WIDTH = 700;
@@ -63,63 +62,9 @@ export function CloudImage(props: CloudImageProps) {
 	const srcUrl = parseURL(src);
 	srcUrl.searchParams.set('fit', fit);
 
-	let finalWidth: number | undefined;
-	let finalHeight: number | undefined;
-	let finalAspectRatio: number | undefined;
-
-	const widthType = typeof originalWidth === 'number' ? 'number' : 'null';
-	const heightType = typeof originalHeight === 'number' ? 'number' : 'null';
-
-	switch (`${widthType}-${heightType}` as const) {
-		case 'null-null': {
-			// No width or height provided
-			break;
-		}
-
-		case 'null-number': {
-			// Only height is provided
-			finalHeight = originalHeight ?? undefined;
-			break;
-		}
-
-		case 'number-null': {
-			// Only width is provided
-			invariant(typeof originalWidth === 'number');
-			finalWidth = Math.min(originalWidth, MAX_WIDTH);
-			break;
-		}
-
-		case 'number-number': {
-			// Both width and height are provided
-			invariant(typeof originalWidth === 'number');
-			invariant(typeof originalHeight === 'number');
-			if (originalWidth > MAX_WIDTH) {
-				finalWidth = MAX_WIDTH;
-				finalHeight = Math.round((originalHeight / originalWidth) * MAX_WIDTH);
-			} else {
-				finalWidth = originalWidth;
-				finalHeight = originalHeight;
-			}
-			if (!originalAspectRatio) {
-				finalAspectRatio = originalWidth / originalHeight;
-			}
-			break;
-		}
-
-		default: {
-			throw new Error(
-				`Invalid height/width combination: ${originalHeight} x ${originalWidth}`,
-			);
-		}
-	}
-
-	const img = (
+	const image = (
 		<Image
 			alt={alt}
-			aspectRatio={
-				// Can't set aspect radio when height and width are provided
-				finalAspectRatio as undefined
-			}
 			background="auto"
 			breakpoints={breakpoints}
 			className={cn(
@@ -127,34 +72,54 @@ export function CloudImage(props: CloudImageProps) {
 				className,
 			)}
 			fallback={fallback}
-			height={
-				// Unpic will correctly handle undefined values, but they types error so
-				// we need to do a type assertion here
-				finalHeight as number
-			}
 			layout="constrained"
 			loading={priority ? 'eager' : loading}
 			priority={priority}
 			src={srcUrl.toString()}
-			width={
-				// Unpic will correctly handle undefined values, but they types error so
-				// we need to do a type assertion here
-				finalWidth as number
-			}
+			{...getImageDimensions({
+				aspectRatio: originalAspectRatio,
+				height: originalHeight,
+				width: originalWidth,
+			})}
 			{...consumerProps}
 		/>
 	);
 
-	if (caption) {
-		return (
-			<figure>
-				{img}
-				<figcaption>{caption}</figcaption>
-			</figure>
-		);
+	if (!caption) return image;
+
+	return (
+		<figure>
+			{image}
+			<figcaption>{caption}</figcaption>
+		</figure>
+	);
+}
+
+function getImageDimensions(
+	params: Pick<CloudImageProps, 'aspectRatio' | 'height' | 'width'>,
+) {
+	// Unpic treats zero dimensions as omitted while the preview is incomplete.
+	const width = Math.min(params.width ?? 0, MAX_WIDTH);
+	if (params.width == null || params.height == null) {
+		return { width, height: params.height ?? 0 };
 	}
 
-	return img;
+	const height =
+		params.width > MAX_WIDTH
+			? Math.round((params.height / params.width) * MAX_WIDTH)
+			: params.height;
+	const aspectRatio = params.width / params.height;
+
+	// Keep the source ratio when Unpic can infer the same rounded height.
+	if (
+		!params.aspectRatio &&
+		aspectRatio &&
+		(!height || Math.round(width / aspectRatio) === height)
+	) {
+		return { width, aspectRatio };
+	}
+
+	return { width, height };
 }
 
 const defaultBreakpoints = [

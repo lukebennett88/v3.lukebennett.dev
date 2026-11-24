@@ -9,14 +9,16 @@ import { Link } from '../lib/keystatic/renderers/link';
 	title="404 - Page Not Found"
 	description="The page you're looking for doesn't exist."
 >
-	<div class="prose dark:prose-invert mx-auto max-w-prose text-center">
+	<div class="mx-auto prose max-w-prose text-center dark:prose-invert">
 		<Heading level={1}>Page Not Found</Heading>
 		<Me className="mx-auto max-w-sm" />
 		<p class="text-lg text-gray-600 dark:text-gray-400">
 			Sorry, there is nothing at this URL.
 		</p>
 		<p>
-			<Link href="/"><span aria-hidden="true">← </span>Back to Home</Link>
+			<Link href="/">
+				<span aria-hidden="true">← </span>Back to Home
+			</Link>
 		</p>
 	</div>
 </Layout>

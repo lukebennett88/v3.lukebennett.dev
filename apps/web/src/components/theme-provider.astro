@@ -18,7 +18,7 @@ import Icon from './icon.astro';
 
 <script>
 	interface ThemeProvider {
-		updatePickers(theme?: string): void;
+		updatePickers: (theme?: string) => void;
 	}
 
 	declare global {

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import test from 'node:test';
+import { test } from 'vite-plus/test';
 
 import {
 	getStandardSiteDocumentUri,
@@ -28,14 +28,12 @@ test('returns an empty document map when manifest is missing outside production'
 });
 
 test('throws when manifest is required and missing', () => {
-	assert.throws(
-		() =>
-			loadStandardSiteManifest({
-				manifestPath: join(tmpdir(), 'missing-standard-site.json'),
-				requireManifest: true,
-			}),
-		/Record Manifest artifact is required/,
-	);
+	assert.throws(() => {
+		return loadStandardSiteManifest({
+			manifestPath: join(tmpdir(), 'missing-standard-site.json'),
+			requireManifest: true,
+		});
+	}, /Record Manifest artifact is required/);
 });
 
 test('throws when manifest JSON is malformed', async () => {
@@ -45,14 +43,12 @@ test('throws when manifest JSON is malformed', async () => {
 	try {
 		await writeFile(manifestPath, '{bad json', 'utf8');
 
-		assert.throws(
-			() =>
-				loadStandardSiteManifest({
-					manifestPath,
-					requireManifest: false,
-				}),
-			/Record Manifest artifact is malformed/,
-		);
+		assert.throws(() => {
+			return loadStandardSiteManifest({
+				manifestPath,
+				requireManifest: false,
+			});
+		}, /Record Manifest artifact is malformed/);
 	} finally {
 		await rm(dir, { force: true, recursive: true });
 	}
