@@ -34,9 +34,18 @@
 			steamFade 3s ease-in-out infinite,
 			steamTransform 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 	}
-}
 
-@layer components {
+	/* Keep the fade so the steam still reads, but drop the drift. */
+	@media (prefers-reduced-motion: reduce) {
+		.animate-steamRise {
+			animation: steamFade 3s ease-in-out infinite;
+		}
+	}
+
+	/*
+		Prose overrides live in the utilities layer so they beat
+		@tailwindcss/typography, which also registers there.
+	*/
 	.prose {
 		font-family: var(--font-serif);
 	}
@@ -55,6 +64,56 @@
 	.prose code::after {
 		content: none;
 	}
+
+	.prose a {
+		text-decoration-color: var(--color-teal-700);
+		text-decoration-thickness: from-font;
+		text-underline-offset: 0.15em;
+	}
+
+	.dark .prose a {
+		text-decoration-color: var(--color-teal-500);
+	}
+}
+
+/*
+	Glues an inline element to the preceding word so it never wraps onto a line
+	by itself. The word joiner (U+2060) forbids a line break on either side, and
+	the empty alt text keeps screen readers from announcing it. Space for an
+	out-of-flow child (such as an icon) is reserved with padding *before* the
+	joiner, because trailing padding can still wrap onto the next line alone.
+*/
+@utility join-previous-word {
+	&::before {
+		content: '\2060';
+		content: '\2060' / '';
+		padding-inline-start: var(--join-previous-word-space, 0);
+	}
+}
+
+/*
+	View transitions. Astro disables these under prefers-reduced-motion.
+	The page crossfade stays quick so navigation never feels like it waits;
+	the active nav pill slides to its new item with a strong ease-out.
+*/
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 180ms;
+}
+
+::view-transition-group(nav-pill) {
+	animation-duration: 260ms;
+	animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* The pill slides above the page but beneath the nav labels. */
+::view-transition-group(*) {
+	z-index: 1;
+}
+
+::view-transition-group(root),
+::view-transition-group(nav-pill) {
+	z-index: 0;
 }
 
 /*
@@ -100,7 +159,7 @@
 
 	:root {
 		--focus-outline-color-light: var(--color-teal-700);
-		--focus-outline-color-dark: var(--color-teal-700);
+		--focus-outline-color-dark: var(--color-teal-400);
 		--focus-outline-color: var(--focus-outline-color-light);
 		--focus-outline-offset: 2px;
 		--focus-outline-style: solid;
@@ -111,11 +170,38 @@
 		--focus-outline-color: var(--focus-outline-color-dark);
 	}
 
+	/*
+		Set the outline colour on every element, not only on focus, so
+		`transition-colors` never fades the ring in from `currentColor`.
+	*/
+	* {
+		outline-color: var(--focus-outline-color);
+	}
+
 	*:focus-visible {
 		outline-width: var(--focus-outline-width);
 		outline-style: var(--focus-outline-style);
-		outline-color: var(--focus-outline-color);
 		outline-offset: var(--focus-outline-offset);
+	}
+
+	::selection {
+		background-color: var(--color-teal-200);
+		color: var(--color-gray-950);
+	}
+
+	.dark ::selection {
+		background-color: var(--color-teal-800);
+		color: var(--color-white);
+	}
+
+	:root {
+		accent-color: var(--color-teal-700);
+		caret-color: var(--color-teal-700);
+	}
+
+	.dark {
+		accent-color: var(--color-teal-400);
+		caret-color: var(--color-teal-400);
 	}
 
 	@media (forced-colors: active) {

@@ -45,7 +45,10 @@ const year = new Date().getFullYear();
 		<ul class="flex items-center gap-4">
 			{rssFeeds.map(({ label, href }) => (
 				<li>
-					<a class="inline-flex items-center gap-2 underline" href={href}>
+					<a
+						class="underline decoration-gray-400 underline-offset-[0.15em] transition-colors duration-150 hover:text-teal-800 hover:decoration-teal-700 dark:decoration-gray-500 dark:hover:text-teal-300"
+						href={href}
+					>
 						{label}
 					</a>
 				</li>
@@ -57,7 +60,7 @@ const year = new Date().getFullYear();
 			{socialLinks.map(({ label, href, icon: Icon }) => (
 				<li>
 					<a
-						class="block rounded-sm text-gray-500 transition-colors duration-200 hover:text-gray-700"
+						class="-m-1.5 block rounded-full p-1.5 text-gray-500 transition-colors duration-150 hover:text-teal-700 dark:text-gray-400 dark:hover:text-teal-400"
 						href={href}
 						rel="me"
 					>
