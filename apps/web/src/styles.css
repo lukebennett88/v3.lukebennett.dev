@@ -156,8 +156,19 @@
 	}
 }
 
+/*
+	Matches the card's `rounded-4xl` (2rem). Safari resolves `rem` in view
+	transition pseudo-elements against the browser default 16px rather than the
+	root's 20px, so the corners shrink mid transition. The pseudo-elements
+	inherit the root font size, so `em` here means what `rem` means on the card.
+*/
+:root {
+	--radius-site-card: 2em;
+}
+
 ::view-transition-group(site-card) {
-	@apply rounded-4xl bg-gray-100 shadow-md;
+	@apply bg-gray-100 shadow-md;
+	border-radius: var(--radius-site-card);
 }
 
 .dark::view-transition-group(site-card) {
@@ -172,7 +183,7 @@
 
 ::view-transition-image-pair(site-main) {
 	overflow: clip;
-	border-radius: 0 0 var(--radius-4xl) var(--radius-4xl);
+	border-radius: 0 0 var(--radius-site-card) var(--radius-site-card);
 }
 
 /* Keep text and images at their original scale while the card resizes. */
