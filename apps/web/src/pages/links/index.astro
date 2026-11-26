@@ -1,6 +1,5 @@
 ---
 import ExternalLinkHeading from '../../components/external-link-heading.astro';
-import { ZeroWidthSpace } from '../../components/zero-width-space';
 import Layout from '../../layouts/layout.astro';
 import { DocumentRenderer } from '../../lib/keystatic/document-renderer';
 import { reader } from '../../lib/keystatic/reader';
@@ -22,8 +21,8 @@ const links = await Promise.all(
 );
 ---
 
-<Layout title="Posts">
-	<div class="mx-auto flex max-w-prose flex-col gap-4">
+<Layout title="Links">
+	<div class="mx-auto flex max-w-content flex-col gap-4">
 		<div class="prose dark:prose-invert">
 			<h1>Links</h1>
 			<p class="text-balance">
@@ -33,30 +32,34 @@ const links = await Promise.all(
 				<a href="/posts">check out the posts section</a> instead.
 			</p>
 		</div>
-		<ul class="flex max-w-prose flex-col gap-1 sm:gap-3" role="list">
-			{links.map(({ content, linkedUrl, publishedAt, slug, title }) => {
-				const headingLevel = '2';
-				const HeadingTag = `h${headingLevel}` as const;
-				return (
-					<li class="-mx-4 prose bg-white p-4 wrap-break-word shadow-sm sm:rounded-xl dark:bg-gray-800 dark:prose-invert">
-						<div class="flex items-start justify-between gap-6">
-							<ExternalLinkHeading href={linkedUrl} level={headingLevel}>
-								{title}
-							</ExternalLinkHeading>
-							<div class="inline-flex items-baseline">
-								<a href={`/links/${slug}`}>Permalink</a>
-								<HeadingTag aria-hidden="true" class="mt-0">
-									<ZeroWidthSpace />
-								</HeadingTag>
-							</div>
-						</div>
+		<ul class="flex max-w-content flex-col gap-1 sm:gap-3" role="list">
+			{links.map(({ content, linkedUrl, publishedAt, slug, title }) => (
+				<li class="-mx-4 bg-white p-4 wrap-break-word shadow-sm sm:rounded-xl dark:bg-gray-800">
+					<ExternalLinkHeading
+						class="text-xl/tight font-bold text-gray-900 sm:text-2xl/tight dark:text-white"
+						href={linkedUrl}
+						level="2"
+					>
+						{title}
+					</ExternalLinkHeading>
+					<div class="prose mt-3 dark:prose-invert">
 						<DocumentRenderer document={content} />
-						<time class="text-sm" datetime={publishedAt}>
+					</div>
+					<p class="mt-3 flex flex-wrap items-baseline gap-x-2 text-sm text-gray-600 dark:text-gray-400">
+						<time class="tabular-nums" datetime={publishedAt}>
 							{formatToAustralianDate(publishedAt)}
 						</time>
-					</li>
-				);
-			})}
+						<span aria-hidden="true">·</span>
+						<a
+							aria-label={`Permalink for ${title}`}
+							class="underline decoration-gray-400 underline-offset-[0.15em] transition-colors duration-150 hover:text-teal-800 hover:decoration-teal-700 dark:decoration-gray-500 dark:hover:text-teal-300"
+							href={`/links/${slug}`}
+						>
+							Permalink
+						</a>
+					</p>
+				</li>
+			))}
 		</ul>
 	</div>
 </Layout>

@@ -7,8 +7,8 @@ const page = await reader.singletons.homepage.readOrThrow();
 const content = await page.content();
 ---
 
-<Layout title="Luke Bennett">
-	<div class="mx-auto prose dark:prose-invert">
+<Layout revealFooter={false} title="Luke Bennett">
+	<div class="mx-auto prose dark:prose-invert max-sm:prose-h1:mb-3.5 max-sm:prose-p:my-3 max-sm:prose-img:my-4">
 		<DocumentRenderer document={content} />
 	</div>
 </Layout>

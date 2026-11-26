@@ -7,45 +7,15 @@ import Icon from './icon.astro';
 	(() => {
 		const storedTheme =
 			typeof localStorage !== 'undefined' && localStorage.getItem('theme');
-		const theme =
-			storedTheme ||
-			(window.matchMedia('(prefers-color-scheme: light)').matches
-				? 'light'
-				: 'dark');
+		if (storedTheme === 'light' || storedTheme === 'dark') {
+			document.documentElement.classList.add(storedTheme);
+			return;
+		}
+		const theme = window.matchMedia('(prefers-color-scheme: light)').matches
+			? 'light'
+			: 'dark';
 		document.documentElement.classList.add(theme);
 	})();
-</script>
-
-<script>
-	interface ThemeProvider {
-		updatePickers: (theme?: string) => void;
-	}
-
-	declare global {
-		interface Window {
-			ThemeProvider: ThemeProvider;
-		}
-	}
-
-	window.ThemeProvider = {
-		updatePickers(theme = 'auto') {
-			requestAnimationFrame(() => {
-				document.querySelectorAll('theme-select').forEach((picker) => {
-					const select = picker.querySelector('select');
-					if (select) select.value = theme;
-					const tmpl =
-						document.querySelector<HTMLTemplateElement>('#theme-icons');
-					const newIcon = tmpl?.content.querySelector('.' + theme);
-					if (newIcon) {
-						const oldIcon = picker.querySelector('svg.label-icon');
-						if (oldIcon) {
-							oldIcon.replaceChildren(...newIcon.cloneNode(true).childNodes);
-						}
-					}
-				});
-			});
-		},
-	};
 </script>
 
 <template id="theme-icons">

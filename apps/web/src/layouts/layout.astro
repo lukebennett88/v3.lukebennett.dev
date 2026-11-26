@@ -11,12 +11,14 @@ import '../styles.css';
 
 export type Props = {
 	description?: string;
+	revealFooter?: boolean;
 	standardSiteDocumentUri?: string;
 	title?: string;
 };
 
 const {
 	description = 'Luke Bennett’s personal website',
+	revealFooter = true,
 	standardSiteDocumentUri,
 	title = 'Luke Bennett',
 } = Astro.props;
@@ -29,7 +31,7 @@ const ogImage = new URL('/og.jpg', Astro.site).toString();
 ---
 
 <!doctype html>
-<html lang="en-AU" class="font-sans text-xl antialiased">
+<html lang="en-AU" class="bg-teal-800 font-sans text-xl antialiased">
 	<head>
 		<Font cssVariable="--font-sans" preload />
 		<Font cssVariable="--font-serif" preload />
@@ -80,25 +82,31 @@ const ogImage = new URL('/og.jpg', Astro.site).toString();
 		<meta name="twitter:image:height" content="1080" />
 		<ClientRouter />
 	</head>
-	<body class="min-h-100dvh flex justify-center bg-teal-700 p-2 tab-2">
+	<body class="px-2 tab-2 sm:px-4">
 		<ThemeProvider />
 		<div
-			class={cn(
-				packs.container,
-				'flex flex-col rounded-2xl bg-gray-100 shadow-2xl dark:bg-gray-900',
-			)}
+			class={cn(packs.container, !revealFooter && 'flex min-h-svh flex-col')}
 		>
-			<Header />
-			<main
+			<div
 				class={cn(
-					packs.innerPadding,
-					'flex-1 bg-gray-100 pt-10 pb-20 dark:bg-gray-900',
+					'relative z-10 flex flex-col pt-5 sm:pt-4',
+					revealFooter && 'min-h-lvh',
 				)}
-				id={MAIN_ID}
 			>
-				<slot />
-			</main>
-			<Footer />
+				<div class="flex flex-1 flex-col rounded-4xl bg-gray-100 shadow-md motion-safe:[view-transition-name:site-card] dark:bg-gray-900">
+					<Header />
+					<main
+						class={cn(
+							packs.innerPadding,
+							'flex-1 pt-4 pb-8 motion-safe:[view-transition-name:site-main] md:pt-12 md:pb-20',
+						)}
+						id={MAIN_ID}
+					>
+						<slot />
+					</main>
+				</div>
+			</div>
+			<Footer reveal={revealFooter} />
 		</div>
 	</body>
 </html>

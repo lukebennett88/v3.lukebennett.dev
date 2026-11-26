@@ -3,6 +3,12 @@ import BlueSkyIcon from '../components/icons/blue-sky.astro';
 import GitHubIcon from '../components/icons/github.astro';
 import MastodonIcon from '../components/icons/mastodon.astro';
 
+type Props = {
+	reveal: boolean;
+};
+
+const { reveal } = Astro.props;
+
 const socialLinks = [
 	{
 		href: 'https://bsky.app/profile/lukebennett.dev',
@@ -35,17 +41,27 @@ const rssFeeds = [
 const year = new Date().getFullYear();
 ---
 
-<footer class="mx-auto flex w-full max-w-4xl flex-col items-center justify-between gap-4 px-4 py-8 text-gray-700 sm:px-6 lg:px-8 dark:text-gray-400">
+<footer
+	class:list={[
+		'flex flex-col items-center gap-4 px-4 py-4 text-center text-white [--focus-outline-color:var(--color-white)] sm:px-6 md:py-8 lg:px-8',
+		reveal
+			? 'bottom-0 motion-safe:sticky motion-safe:focus-within:static'
+			: 'mt-auto',
+	]}
+>
 	<nav
 		aria-label="RSS Feeds"
 		class="flex flex-col items-center"
 		role="navigation"
 	>
 		<h2>Subscribe to my RSS feed</h2>
-		<ul class="flex items-center gap-4">
+		<ul class="flex flex-wrap items-center justify-center gap-x-4">
 			{rssFeeds.map(({ label, href }) => (
 				<li>
-					<a class="inline-flex items-center gap-2 underline" href={href}>
+					<a
+						class="underline decoration-teal-200 underline-offset-[0.15em] transition-colors duration-150 hover:decoration-white"
+						href={href}
+					>
 						{label}
 					</a>
 				</li>
@@ -57,7 +73,7 @@ const year = new Date().getFullYear();
 			{socialLinks.map(({ label, href, icon: Icon }) => (
 				<li>
 					<a
-						class="block rounded-sm text-gray-500 transition-colors duration-200 hover:text-gray-700"
+						class="-m-1.5 block rounded-full p-1.5 transition-colors duration-150 hover:bg-teal-900"
 						href={href}
 						rel="me"
 					>

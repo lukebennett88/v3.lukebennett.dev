@@ -1,5 +1,8 @@
 import type { InferRenderersForComponentBlocks } from '@keystatic/core';
-import type { DocumentRendererProps } from '@keystatic/core/renderer';
+import {
+	type DocumentRendererProps,
+	defaultRenderers,
+} from '@keystatic/core/renderer';
 import type { Highlighter } from 'shiki';
 
 import type { componentBlocks } from '../component-block';
@@ -8,6 +11,8 @@ import { Code } from './code';
 import { Heading } from './heading';
 import { InlineCode } from './inline-code';
 import { Link } from './link';
+
+const Table = defaultRenderers.block.table;
 
 /**
  * Single registry for all Keystatic renderers. Returns both the
@@ -31,6 +36,18 @@ export function createKeystaticRenderers(highlighter: Highlighter): {
 				},
 				heading(props) {
 					return <Heading {...props} />;
+				},
+				table(props) {
+					return (
+						<section
+							className="overflow-x-auto"
+							aria-label="Scrollable table"
+							// oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users need to focus the scroll container.
+							tabIndex={0}
+						>
+							<Table {...props} />
+						</section>
+					);
 				},
 			},
 			inline: {

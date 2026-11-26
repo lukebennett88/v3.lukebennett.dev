@@ -1,24 +1,32 @@
 ---
 import { ExternalLinkIcon } from './icons/external-link';
-import { ZeroWidthSpace } from './zero-width-space';
 
 type Props = {
-	children: React.ReactNode;
+	class?: string;
 	href: string;
 	level: '1' | '2' | '3' | '4' | '5' | '6';
 };
 
-const { href, level } = Astro.props;
+const { class: className, href, level } = Astro.props;
 
 const Tag = `h${level}` as const;
 ---
 
-<a class="group relative block underline" href={href}>
-	<Tag class="m-0 inline-block underline">
+<Tag class:list={['text-balance', className]}>
+	<a
+		class="[font-weight:inherit] underline decoration-teal-700 decoration-from-font underline-offset-[0.15em] transition-colors duration-150 hover:text-teal-800 dark:decoration-teal-500 dark:hover:text-teal-300"
+		href={href}
+	>
 		<slot />
-		<span class="inline-flex items-center">
-			<ZeroWidthSpace />
-			<ExternalLinkIcon className="ms-1 hidden h-[0.75em] w-[0.75em] group-hover:absolute group-hover:inline-block group-focus:absolute group-focus:inline-block" />
+		{/*
+			The span holds only a word joiner plus reserved space, so it stays glued
+			to the last word. The icon sits out of flow in that space because
+			browsers allow a line break before an inline SVG, even after a word
+			joiner.
+		*/}
+		<span class="relative join-previous-word [--join-previous-word-space:0.8em]">
+			<ExternalLinkIcon className="absolute inset-e-0 top-1/2 size-[0.6em] -translate-y-1/2 text-gray-400 dark:text-gray-500" />
 		</span>
-	</Tag>
-</a>
+		<span class="sr-only">(external link)</span>
+	</a>
+</Tag>

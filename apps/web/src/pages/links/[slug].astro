@@ -21,7 +21,12 @@ export async function getStaticPaths() {
 
 <Layout title={title}>
 	<Post document={document} publishedAt={publishedAt}>
-		<ExternalLinkHeading slot="title" href={linkedUrl} level="1">
+		<ExternalLinkHeading
+			class="text-4xl/tight font-extrabold text-balance text-gray-900 dark:text-white"
+			href={linkedUrl}
+			level="1"
+			slot="title"
+		>
 			{title}
 		</ExternalLinkHeading>
 	</Post>

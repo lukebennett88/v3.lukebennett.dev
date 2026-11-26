@@ -9,6 +9,14 @@
 	--font-mono: var(--font-mono);
 }
 
+/*
+	Tailwind's 65ch width varies with the font. Use the same 32.5rem width for
+	the sans-serif lists and serif articles to prevent a sideways shift.
+*/
+@theme {
+	--container-content: 32.5rem;
+}
+
 @layer utilities {
 	@keyframes steamFade {
 		0%,
@@ -34,10 +42,20 @@
 			steamFade 3s ease-in-out infinite,
 			steamTransform 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 	}
-}
 
-@layer components {
+	/* Keep the fade so the steam still reads, but drop the drift. */
+	@media (prefers-reduced-motion: reduce) {
+		.animate-steamRise {
+			animation: steamFade 3s ease-in-out infinite;
+		}
+	}
+
+	/*
+		Prose overrides live in the utilities layer so they beat
+		@tailwindcss/typography, which also registers there.
+	*/
 	.prose {
+		max-width: var(--container-content);
 		font-family: var(--font-serif);
 	}
 
@@ -55,6 +73,188 @@
 	.prose code::after {
 		content: none;
 	}
+
+	.prose a {
+		text-decoration-color: var(--color-teal-700);
+		text-decoration-thickness: from-font;
+		text-underline-offset: 0.15em;
+	}
+
+	.dark .prose a {
+		text-decoration-color: var(--color-teal-500);
+	}
+}
+
+/*
+	Glues an inline element to the preceding word so it never wraps onto a line
+	by itself. The word joiner (U+2060) forbids a line break on either side, and
+	the empty alt text keeps screen readers from announcing it. Space for an
+	out-of-flow child (such as an icon) is reserved with padding *before* the
+	joiner, because trailing padding can still wrap onto the next line alone.
+*/
+@utility join-previous-word {
+	&::before {
+		content: '\2060';
+		content: '\2060' / '';
+		padding-inline-start: var(--join-previous-word-space, 0);
+	}
+}
+
+/*
+	The negative top offset scrolls the mobile logo row or desktop top padding
+	away before the header sticks. Match the offsets to the header layout.
+*/
+:root {
+	/* pt-6 + logo h-11 + gap-4, leaving 0.5rem above the nav */
+	--site-header-top: calc(-1 * (1.5rem + 2.75rem + 1rem) + 0.5rem);
+	/* Height of the part that stays visible once stuck, for anchor links. */
+	--site-header-stuck-height: 3.75rem;
+}
+
+@media (width >= 48rem) {
+	:root {
+		/* pt-8, leaving 0.75rem above the row */
+		--site-header-top: calc(-2rem + 0.75rem);
+		--site-header-stuck-height: 4.5rem;
+	}
+}
+
+.site-header {
+	top: var(--site-header-top);
+}
+
+/*
+	Keep the divider inside the header. Chrome includes overflow in the
+	snapshot and squeezes it into the header box, making the header jump.
+*/
+.site-header::after {
+	content: '';
+	position: absolute;
+	inset-inline: 0;
+	bottom: 0;
+	height: 1px;
+	background-color: var(--color-gray-200);
+	pointer-events: none;
+	opacity: 0;
+}
+
+.dark .site-header::after {
+	background-color: var(--color-gray-800);
+}
+
+@supports (animation-timeline: scroll()) {
+	.site-header::after {
+		animation: site-header-rule linear both;
+		animation-timeline: scroll(root);
+		animation-range: 1rem 4rem;
+	}
+}
+
+@keyframes site-header-rule {
+	to {
+		opacity: 1;
+	}
+}
+
+::view-transition-group(site-card) {
+	@apply rounded-4xl bg-gray-100 shadow-md;
+}
+
+.dark::view-transition-group(site-card) {
+	@apply bg-gray-900;
+}
+
+/* Paint the resizing card on the group to preserve its corners and shadow. */
+::view-transition-old(site-card),
+::view-transition-new(site-card) {
+	display: none;
+}
+
+::view-transition-image-pair(site-main) {
+	overflow: clip;
+	border-radius: 0 0 var(--radius-4xl) var(--radius-4xl);
+}
+
+/* Keep text and images at their original scale while the card resizes. */
+::view-transition-old(site-main),
+::view-transition-new(site-main) {
+	height: 100%;
+	object-fit: none;
+	object-position: top left;
+	animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+::view-transition-old(site-main) {
+	animation-name: vt-content-out;
+}
+
+::view-transition-new(site-main) {
+	animation-name: vt-content-in;
+}
+
+@keyframes vt-content-out {
+	45%,
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes vt-content-in {
+	from,
+	40% {
+		opacity: 0;
+	}
+}
+
+::view-transition-group(*) {
+	z-index: 1;
+	animation-duration: 200ms;
+	animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Fade only the outgoing page over the opaque incoming page. */
+::view-transition-old(root) {
+	z-index: 1;
+	animation: vt-fade-out 150ms cubic-bezier(0.23, 1, 0.32, 1) both;
+	mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+	z-index: 0;
+	mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html::view-transition-old(root) {
+		animation: vt-fade-out 150ms cubic-bezier(0.23, 1, 0.32, 1) both !important;
+	}
+}
+
+@keyframes vt-fade-out {
+	to {
+		opacity: 0;
+	}
+}
+
+::view-transition-group(root) {
+	z-index: 0;
+	animation-duration: 0s;
+}
+
+::view-transition-group(site-header) {
+	z-index: 2;
+}
+
+::view-transition-group(nav-pill) {
+	z-index: 3;
+}
+
+/* Keep in sync with the labels in header.astro. */
+::view-transition-group(nav-home),
+::view-transition-group(nav-posts),
+::view-transition-group(nav-links),
+::view-transition-group(nav-blogroll) {
+	z-index: 4;
 }
 
 /*
@@ -76,7 +276,7 @@
 	}
 
 	[id] {
-		scroll-margin-top: 1rem; /* equivalent to theme('spacing[4]') */
+		scroll-margin-top: calc(var(--site-header-stuck-height, 0px) + 1rem);
 	}
 
 	/* Existing compatibility styles for v4 */
@@ -90,17 +290,18 @@
 
 	html {
 		overflow-y: scroll;
+		scrollbar-color: var(--color-teal-100) var(--color-teal-800);
 	}
-	@supports (scrollbar-gutter: stable) {
+	@supports (scrollbar-gutter: stable both-edges) {
 		html {
 			overflow-y: auto;
-			scrollbar-gutter: stable;
+			scrollbar-gutter: stable both-edges;
 		}
 	}
 
 	:root {
 		--focus-outline-color-light: var(--color-teal-700);
-		--focus-outline-color-dark: var(--color-teal-700);
+		--focus-outline-color-dark: var(--color-teal-400);
 		--focus-outline-color: var(--focus-outline-color-light);
 		--focus-outline-offset: 2px;
 		--focus-outline-style: solid;
@@ -111,11 +312,38 @@
 		--focus-outline-color: var(--focus-outline-color-dark);
 	}
 
+	/*
+		Set the outline colour on every element, not only on focus, so
+		`transition-colors` never fades the ring in from `currentColor`.
+	*/
+	* {
+		outline-color: var(--focus-outline-color);
+	}
+
 	*:focus-visible {
 		outline-width: var(--focus-outline-width);
 		outline-style: var(--focus-outline-style);
-		outline-color: var(--focus-outline-color);
 		outline-offset: var(--focus-outline-offset);
+	}
+
+	::selection {
+		background-color: var(--color-teal-200);
+		color: var(--color-gray-950);
+	}
+
+	.dark ::selection {
+		background-color: var(--color-teal-800);
+		color: var(--color-white);
+	}
+
+	:root {
+		accent-color: var(--color-teal-700);
+		caret-color: var(--color-teal-700);
+	}
+
+	.dark {
+		accent-color: var(--color-teal-400);
+		caret-color: var(--color-teal-400);
 	}
 
 	@media (forced-colors: active) {

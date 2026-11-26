@@ -11,10 +11,15 @@ type Props = {
 const { document, publishedAt } = Astro.props;
 ---
 
-<div class="mx-auto prose dark:prose-invert">
-	<time class="block text-sm" datetime={publishedAt}>
-		{formatToAustralianDate(publishedAt)}
-	</time>
-	<slot name="title" />
+<article class="mx-auto prose dark:prose-invert">
+	<header class="not-prose mb-10">
+		<slot name="title" />
+		<time
+			class="mt-3 block w-fit text-sm text-gray-600 tabular-nums dark:text-gray-400"
+			datetime={publishedAt}
+		>
+			{formatToAustralianDate(publishedAt)}
+		</time>
+	</header>
 	<DocumentRenderer document={document} />
-</div>
+</article>

@@ -16,30 +16,38 @@ import ThemeSelect from '../components/theme-select.astro';
 		/>
 	</theme-select>
 
-	{/* Inlined to avoid FOUC. Uses global scope from `ThemeProvider.astro` */}
-	<script is:inline>
-		ThemeProvider.updatePickers();
-	</script>
-
 	<script>
 		type Theme = 'auto' | 'dark' | 'light';
 
 		class ThemeSelect extends HTMLElement {
 			/** Key in `localStorage` to store color theme preference at. */
 			#key = 'theme';
+			#colorScheme = matchMedia('(prefers-color-scheme: light)');
 
 			constructor() {
 				super();
-				this.#onThemeChange(this.#loadTheme());
-				const select = this.querySelector('select');
-				if (select) {
-					select.addEventListener('change', (e) => {
-						if (e.currentTarget instanceof HTMLSelectElement) {
-							this.#onThemeChange(this.#parseTheme(e.currentTarget.value));
-						}
-					});
-				}
+				this.addEventListener('change', (e) => {
+					if (e.target instanceof HTMLSelectElement) {
+						this.#applyTheme(this.#parseTheme(e.target.value));
+					}
+				});
 			}
+
+			connectedCallback() {
+				this.#applyTheme(this.#loadTheme());
+				this.#colorScheme.addEventListener('change', this.#onColorSchemeChange);
+			}
+
+			disconnectedCallback() {
+				this.#colorScheme.removeEventListener(
+					'change',
+					this.#onColorSchemeChange,
+				);
+			}
+
+			#onColorSchemeChange = () => {
+				if (this.#loadTheme() === 'auto') this.#applyTheme('auto');
+			};
 
 			/** Get a typesafe theme string from any JS value (unknown values are coerced to `'auto'`). */
 			#parseTheme(theme: unknown): Theme {
@@ -52,14 +60,20 @@ import ThemeSelect from '../components/theme-select.astro';
 
 			/** Get the preferred system color scheme. */
 			#getPreferredColorScheme(): Theme {
-				return matchMedia('(prefers-color-scheme: light)').matches
-					? 'light'
-					: 'dark';
+				return this.#colorScheme.matches ? 'light' : 'dark';
 			}
 
-			/** Update select menu UI, document theme, and local storage state. */
-			#onThemeChange(theme: Theme): void {
-				ThemeProvider.updatePickers(theme);
+			#applyTheme(theme: Theme): void {
+				const select = this.querySelector('select');
+				if (select) select.value = theme;
+				const template =
+					document.querySelector<HTMLTemplateElement>('#theme-icons');
+				const icon = template?.content.querySelector(`.${theme}`);
+				const labelIcon = this.querySelector('svg.label-icon');
+				if (icon && labelIcon) {
+					labelIcon.replaceChildren(...icon.cloneNode(true).childNodes);
+				}
+
 				document.documentElement.classList.remove('light', 'dark');
 				document.documentElement.classList.add(
 					theme === 'auto' ? this.#getPreferredColorScheme() : theme,
